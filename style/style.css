@@ -1,0 +1,43 @@
+
+body {background: #232}
+#heading {height: 20px; background: #232; color: white}
+#heading .menu span {margin-right: 0.4em; border: 1px outset; border-radius: 0.2em; 
+     background: #242; padding: 3px 6px 1px; font-family: helvetica, sans-serif}
+#heading .menu span:hover {background: #464}
+
+#widget  { 
+  font-family: Helvetica, sans-serif;
+  font-size: 96%; 
+  margin-top: 8px; 
+  min-height: 10em; 
+  background: #f0f0f0; 
+  max-width: 36em; 
+  border-radius: 0.3em
+}
+.subsect {font-weight: bold; color: #464}
+div.butt {margin-top: 1em;}
+input {height: 1.25em !important}
+img.upd { margin-bottom: -6px}
+
+.errmsg {color :#a00; margin-left: 2em; margin-right: 2em; font-style: italic}
+
+div.menu img {margin-bottom: -9px; margin-right: 5px}
+div.key input {background: #eff}
+
+.itemList {border-bottom: 2px solid #999; padding: 0em 0.3em 0.3em 2em}
+.itemList span.box {white-space: nowrap; margin-right: 0.6em; margin-bottom: 2px}
+.itemList span.box img {height: 0.9em; margin-bottom: -2px}
+.itemList {display: flex; flex-wrap: wrap}
+
+.itemList span.box span {
+    border: outset 1px; padding: 2px; padding-bottom: 0; border-radius: 2px;
+}
+
+.itemList span.box span:hover {
+     border: 2px solid #d77
+}
+
+span.active   {background: #fe9;}
+span.allowed  {background: #dfd;}
+span.denied   {background: #fadaca; color: #200 }
+span.unknown  {background: #ccc}
