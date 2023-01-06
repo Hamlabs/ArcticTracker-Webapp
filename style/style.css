@@ -22,6 +22,8 @@ img.upd { margin-bottom: -6px}
 .errmsg {color :#a00; margin-left: 2em; margin-right: 2em; font-style: italic}
 
 div.menu img {margin-bottom: -9px; margin-right: 5px}
+div.menu img#fwd {margin-bottom: -3px; height: 17px}
+div.menu img#fwd:hover {background: green}
 div.key input {background: #eff}
 
 .itemList {border-bottom: 2px solid #999; padding: 0em 0.3em 0.3em 2em}

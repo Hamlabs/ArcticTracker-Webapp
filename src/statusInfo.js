@@ -1,8 +1,5 @@
 /*
- Map browser based on OpenLayers 5. 
- Misc. generic application stuff. 
- 
- Copyright (C) 2017-2019 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
+ Copyright (C) 2022-2023 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published 
@@ -86,6 +83,10 @@ pol.core.statusInfo = class extends pol.core.Widget {
         );
     }
     
+    onActivate() {
+        this.getInfo();
+    }
+
 } /* class */
 
 

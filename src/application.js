@@ -17,22 +17,33 @@ var datastore = localforage.createInstance({
  * Server instance. Initially we have an instance with id=NOCALL
  */
 let server = new pol.core.Server("NOCALL");
-
+let selectedWidget = null;
 
 
 /*
- * Show status info. 
+ * Show widget. 
  */ 
 function show(id) {
     return ()=> {
         var x = pol.widget.get(id);
         x.activate( $('#widget')[0] );
-        x.getInfo();
+        selectedWidget = x;
     }
 }
 
 setTimeout(show("core.keySetup"), 300);
 
+
+function nextTracker() {
+    pol.widget.get("core.keySetup").selectNext();
+    selectedWidget.onActivate();
+}
+
+
+function prevTracker() {
+    pol.widget.get("core.keySetup").selectPrev();
+    selectedWidget.onActivate();
+}
 
 
 function isOpen() {
@@ -51,7 +62,9 @@ menu = {
             m("span", {onclick: show("core.aprsSetup")},    "Aprs"),
             m("span", {onclick: show("core.digiSetup")},    "Digi/Igate"), 
             m("span", {onclick: show("core.trklogSetup")},  "Trklog"), nbsp,
-            server.id
+            server.id, nbsp,
+            m("img", {src:"img/back.png", id: "fwd", onclick: prevTracker}),
+            m("img", {src:"img/forward.png", id: "fwd", onclick: nextTracker})
         ])
     }
 };
