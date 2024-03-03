@@ -34,6 +34,8 @@ pol.core.wifiSetup = class extends pol.core.Widget {
             ap_5_ssid:m.stream(""), ap_5_pw:m.stream("")
         };
         t.dirty = false;    
+        t.keys = pol.widget.get("core.keySetup");
+        
         
         this.widget = {
             view: function() {
@@ -113,7 +115,7 @@ pol.core.wifiSetup = class extends pol.core.Widget {
             
         function update() {
             var obj = Object.assign({}, t.data); 
-            server.PUT( "api/wifi", JSON.stringify(obj),
+            this.keys.getSelectedSrv().PUT( "api/wifi", JSON.stringify(obj),
                 ()=> { 
                     t.dirty = false; 
                     t.data.apikey("");
@@ -129,7 +131,7 @@ pol.core.wifiSetup = class extends pol.core.Widget {
 
         
     getInfo() {
-        server.GET( "api/wifi", null, 
+         this.keys.getSelectedSrv().GET( "api/wifi", null, 
             st => {
               //  const st = JSON.parse(x);
                 this.data = st;

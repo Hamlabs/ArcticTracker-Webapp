@@ -33,7 +33,9 @@ pol.core.aprsSetup = class extends pol.core.Widget {
             maxpause:m.stream(""), minpause:m.stream(""), mindist:m.stream(""), repeat:m.stream(""), turnlimit:m.stream(""),
             timestamp:false, compress:false, altitude:false, extraturn:false };
         t.dirty = false;    
-                    
+        t.keys = pol.widget.get("core.keySetup");
+        
+        
         this.widget = {
             view: function() {
                 return m("div", [  
@@ -138,7 +140,7 @@ pol.core.aprsSetup = class extends pol.core.Widget {
             toNumber(obj, "maxpause"); toNumber(obj, "minpause"); 
             toNumber(obj, "mindist"); toNumber(obj, "repeat"); toNumber(obj, "turnlimit");
             
-            server.PUT( "api/aprs", JSON.stringify(obj),
+            this.keys.getSelectedSrv().PUT( "api/aprs", JSON.stringify(obj),
                 ()=> {  
                     t.dirty = false; 
                     t.clearerr();
@@ -153,7 +155,7 @@ pol.core.aprsSetup = class extends pol.core.Widget {
 
         
     getInfo() {
-        server.GET( "api/aprs", null, 
+         this.keys.getSelectedSrv().GET( "api/aprs", null, 
             st => {
               //  const st = JSON.parse(x);
                 this.data = st;

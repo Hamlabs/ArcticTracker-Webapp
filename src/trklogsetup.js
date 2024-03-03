@@ -31,7 +31,7 @@ pol.core.trklogSetup = class extends pol.core.Widget {
         t.data = {trklog_on:false, trkpost_on:false, url: m.stream(""),  key: m.stream(""), 
                   interv: m.stream(""), ttl: m.stream("")}; 
         t.dirty = false;  
-        
+        t.keys = pol.widget.get("core.keySetup");
         
         this.widget = {
             view: function() {
@@ -102,7 +102,7 @@ pol.core.trklogSetup = class extends pol.core.Widget {
             var obj = Object.assign({}, t.data); 
             toNumber(obj, "interv"); toNumber(obj, "ttl"); 
 
-            server.PUT( "api/trklog", JSON.stringify(obj),
+            t.keys.getSelectedSrv().PUT( "api/trklog", JSON.stringify(obj),
                 ()=> { 
                     t.dirty = false; 
                     t.clearerr(); 
@@ -117,7 +117,7 @@ pol.core.trklogSetup = class extends pol.core.Widget {
 
         
     getInfo() {
-        server.GET( "api/trklog", null, 
+        this.keys.getSelectedSrv().GET( "api/trklog", null, 
             st => {
               //  const st = JSON.parse(x);
                 this.data = st;

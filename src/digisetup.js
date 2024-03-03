@@ -30,6 +30,8 @@ pol.core.digiSetup = class extends pol.core.Widget {
         t.classname = "core.digiSetup"; 
         t.data = {digiOn:false, wide1:false, sar:false, igateOn:false, server: m.stream(""),  port: m.stream(""), user: m.stream(""), passcode: m.stream("")}; 
         t.dirty = false;   
+        t.keys = pol.widget.get("core.keySetup");
+                
                 
         this.widget = {
             view: function() {
@@ -103,7 +105,7 @@ pol.core.digiSetup = class extends pol.core.Widget {
             var obj = Object.assign({}, t.data); 
             toNumber(obj, "port"); toNumber(obj, "passcode"); 
 
-            server.PUT( "api/digi", JSON.stringify(obj),
+            t.keys.getSelectedSrv().PUT( "api/digi", JSON.stringify(obj),
                 ()=> { 
                     t.dirty = false; 
                     t.clearerr();
@@ -118,7 +120,7 @@ pol.core.digiSetup = class extends pol.core.Widget {
 
         
     getInfo() {
-        server.GET( "api/digi", null, 
+        this.keys.getSelectedSrv().GET( "api/digi", null, 
             st => {
               //  const st = JSON.parse(x);
                 this.data = st;

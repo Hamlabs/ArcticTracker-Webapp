@@ -16,6 +16,7 @@ pol.core.keySetup = class extends pol.core.Widget {
          * If selected is -1 this means that no trackers are selected. 
          */
         t.myTrackers = [];
+        t.myServers = [];
         t.selected = -1;
         
         /* Tracker id field - callsign (URL is also possible) */
@@ -57,7 +58,7 @@ pol.core.keySetup = class extends pol.core.Widget {
                             m(textInput, {value: t.key, size: 32, maxLength:128,  onchange: dirty, regex: /^.*$/i })),
                         m("div.field", 
                             m("span.leftlab", "Key set: "),  
-                            m("span", (server.key != null ? "Yes" : "No"))), 
+                            m("span", (t.hasKey() ? "Yes" : "No"))), 
                       
                         m("div.butt", 
                             m("img.upd", {src: (t.dirty ? "img/warn.png" : "img/ok.png")}),
@@ -77,24 +78,36 @@ pol.core.keySetup = class extends pol.core.Widget {
                 t.myTrackers=x;
                 if (t.myTrackers == null) 
                     t.myTrackers = [];
+                else
+                    t.selected = 0;
+                
+                for (const i in t.myTrackers)
+                    t.myServers[i] = new pol.core.Server(t.myTrackers[i].id)
                 m.redraw();
              });
             
         datastore.getItem("arctic.selected")
             .then( x => {
-                t.select(x);
+                if (x < 0)
+                    return;
+                t.selected = x;
+                m.redraw();
             });
-        
             
             
-        setTimeout(scanTrackers,  1000);
+            
+        setTimeout(scanTrackers,   2000);
         setInterval(scanTrackers, 20000);
-        setInterval(scanMdns, 25000);
+        setInterval(scanMdns,     25000);
+        
         
         
         function _select(i) {
             t.select(i);
+            datastore.setItem("arctic.selected", i);
         }   
+        
+        
         
         /* Get info from server (tracker) */    
         function scanTrackers() {
@@ -130,17 +143,19 @@ pol.core.keySetup = class extends pol.core.Widget {
          * Update the key and/or id of selected tracker.
          */
         function update() {
+            /* Tracker id */
             if (t.trackerid() != "") {
-                server.setId(t.trackerid());  
-                t.myTrackers[t.selected].id = t.trackerid();
+                t.getSelected().id = t.trackerid();
+                t.getSelectedSrv().setId(t.trackerid());
                 t.dirty = false; 
             }
+            
+            /* Key */
             if (t.key() == "")
                 return;
-            server.setKey(t.key())
+            t.getSelectedSrv().setKey(t.key())
               .then( ()=> {
                  t.key("");
-                 t.myTrackers[t.selected].server = server;
                  t.dirty = false; 
                  t.getInfo();
               });
@@ -157,7 +172,7 @@ pol.core.keySetup = class extends pol.core.Widget {
 
         function reset() {
             t.key("");
-            server.removeKey();
+            t.getSelected().removeKey();
         }
 
             
@@ -167,25 +182,37 @@ pol.core.keySetup = class extends pol.core.Widget {
     }    
         
         
+        
+    getSelected() {
+        return this.myTrackers[this.selected];
+    }
+        
+        
+    getSelectedSrv() {
+        return this.myServers[this.selected];
+    }
                 
     select(i) {
-        if (i<0)
+        if (i==null || i<0)
             return;
         const tr = this.myTrackers[i];
-        console.log("SELECT: ", i, tr);
-        server = tr.server; 
         if (! tr.server || tr.server==null) 
-            server = tr.server = new pol.core.Server(tr.id);
+            tr.server = new pol.core.Server(tr.id);
             
         if (i==this.selected && this.myTrackers[i].access) {
             setTimeout(show("core.statusInfo"), 500);
             return;
         }
         this.selected = i;
+        this.trackerid(this.getSelected().id);
+        this.key("");
         datastore.setItem("arctic.selected", i);
     }
         
-        
+    
+    /*
+     * Select next tracker in list. 
+     */
     selectNext() {
         if (this.myTrackers.length <= 1)
             return;
@@ -197,6 +224,10 @@ pol.core.keySetup = class extends pol.core.Widget {
         } while (!this.isAvailable() && i != orig);
     }
     
+    
+    /*
+     * Select previous tracker in list.
+     */
     selectPrev() {
         if (this.myTrackers.length <= 1)
             return;
@@ -219,9 +250,14 @@ pol.core.keySetup = class extends pol.core.Widget {
             return false;
         }
         const i = this.myTrackers.push( { id:id, access:false, denied:false} ) - 1; 
+        const j = this.myServers.push( new pol.core.Server(id) );
+        if (i != j)
+            console.error("Tracker-list doesn't correspond to server-list");
+        
         this.dirty = false;
         datastore.setItem("arctic.mytrackers", this.myTrackers);
         m.redraw();
+        console.log("Added tracker: "+id+ " trying to ping it.", i);
         this.pingTracker(i);
         return true;
     }
@@ -234,26 +270,21 @@ pol.core.keySetup = class extends pol.core.Widget {
     removeTracker(i) {
         console.log("removeTracker: "+i);
         this.myTrackers.splice(i, 1);
+        this.myServers.splice(i, 1);
         datastore.setItem("arctic.mytrackers", this.myTrackers);
         if (this.selected >= i)
                 this.selected--;
         datastore.setItem("arctic.selected", this.selected);
     }
         
+        
                 
     pingTracker(i) {
         const t = this;
-        if (!t.myTrackers[i].server || typeof t.myTrackers[i].server.GET != "function") {
-            t.myTrackers[i].server = new pol.core.Server(t.myTrackers[i].id);
-        }      
-        
         t.myTrackers[i].access=false;
         this.dirty = false;
-        datastore.setItem("arctic.mytrackers", this.myTrackers);
-        if (t.myTrackers[i].server.key != null)
+        if (t.myServers[i].key != null)
             t.getInfo(i);
-        else
-            setTimeout(()=>t.getInfo(i), 500);
     }
     
         
@@ -268,6 +299,10 @@ pol.core.keySetup = class extends pol.core.Widget {
     }
         
 
+    hasKey() {
+        return this.getSelected() && this.getSelected().server &&
+            this.getSelected().server.key != null;
+    }
     
         
     /* 
@@ -277,7 +312,7 @@ pol.core.keySetup = class extends pol.core.Widget {
         {return this.auth;}
         
     isAvailable() 
-        {return this.auth && this.myTrackers[this.selected].access}
+        {return this.auth && this.getSelected().access}
         
     
     /* 
@@ -311,10 +346,8 @@ pol.core.keySetup = class extends pol.core.Widget {
         let srv = null;
         let t = this;
         this.clearerr();
-        if (!i || i==-1)
-            srv = server;
-        else
-            srv = t.myTrackers[i].server;
+        srv = t.getSelectedSrv();
+        console.log("SRV: ", srv);
         
         let auth_ok = false;
         setTimeout(()=> {
@@ -330,7 +363,7 @@ pol.core.keySetup = class extends pol.core.Widget {
                 auth_ok = true;
                 m.redraw();
             },            
-            x=> { 
+            (x,y,z) => { 
                 const denied = (x.status != null && x.status==401) 
                 t.setAuth(i, false, denied); 
                 m.redraw();

@@ -13,10 +13,6 @@ var datastore = localforage.createInstance({
 });
 
 
-/* 
- * Server instance. Initially we have an instance with id=NOCALL
- */
-let server = new pol.core.Server("NOCALL");
 let selectedWidget = null;
 
 
@@ -36,19 +32,34 @@ setTimeout(show("core.keySetup"), 300);
 
 function nextTracker() {
     pol.widget.get("core.keySetup").selectNext();
-    selectedWidget.onActivate();
+    if (selectedWidget.onActivate) 
+        selectedWidget.onActivate();
 }
 
 
 function prevTracker() {
     pol.widget.get("core.keySetup").selectPrev();
-    selectedWidget.onActivate();
+    if (selectedWidget.onActivate)
+        selectedWidget.onActivate();
 }
 
 
 function isOpen() {
-    return server.key!=null && pol.widget.get("core.keySetup").isAuth();
+    let keys = pol.widget.get("core.keySetup"); 
+    if (keys.getSelected() == null || keys.getSelectedSrv() == null)
+        return false; 
+    
+    return keys.getSelectedSrv().key!=null && keys.isAuth()
 }
+
+
+function getSelectedId() {
+    let keys = pol.widget.get("core.keySetup");
+    if (keys.getSelected() == null)
+        return "NONE";
+    return keys.getSelected().id;
+}
+
 
 
 /* Main Menu */
@@ -61,12 +72,13 @@ menu = {
             m("span", {onclick: show("core.wifiSetup")},    "Wifi"),   
             m("span", {onclick: show("core.aprsSetup")},    "Aprs"),
             m("span", {onclick: show("core.digiSetup")},    "Digi/Igate"), 
-            m("span", {onclick: show("core.trklogSetup")},  "Trklog"), nbsp,
-            server.id, nbsp,
+            m("span", {onclick: show("core.trklogSetup")},  "Trklog"), nbsp, getSelectedId(), nbsp,
             m("img", {src:"img/back.png", id: "fwd", onclick: prevTracker}),
             m("img", {src:"img/forward.png", id: "fwd", onclick: nextTracker})
         ])
     }
 };
+
+
 m.mount($("div#heading")[0], menu);
 m.redraw();

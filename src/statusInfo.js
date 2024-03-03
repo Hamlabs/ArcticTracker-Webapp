@@ -29,6 +29,7 @@ pol.core.statusInfo = class extends pol.core.Widget {
         const t = this;
         t.classname = "core.statusInfo"; 
         t.data = {heap:0, flash:0, ap:"-", ipaddr:"-", macaddr: "-",  mdns: "-", vbatt: "-"}; 
+        t.keys = pol.widget.get("core.keySetup");
         
         this.widget = {
             view: function() {
@@ -39,6 +40,12 @@ pol.core.statusInfo = class extends pol.core.Widget {
                             m("span.leftlab", "Free heap: "), toKbytes(t.data.heap)), 
                         m("div.field", 
                             m("span.leftlab", "Flash size: "), toKbytes(t.data.flash)), 
+                      
+                        m("div.field", 
+                            m("span.leftlab", "Filesystem size: "), toKbytes(t.data.sizefs)), 
+                        m("div.field", 
+                            m("span.leftlab", "Filesystem free space: "), toKbytes(t.data.freefs)), 
+                      
                         m("div.field", 
                             m("span.leftlab", "Connected AP: "), t.data.ap ),
                         m("div.field", 
@@ -50,7 +57,7 @@ pol.core.statusInfo = class extends pol.core.Widget {
                         m("div.field", 
                             m("span.leftlab", "MAC address: "), t.data.macaddr ),   
                         m("div.field", 
-                            m("span.leftlab", "Battery voltage: "), t.data.vbatt + " V" ), 
+                            m("span.leftlab", "Battery voltage: "), t.data.vbatt + " V  ("+t.data.vpercent+" %)" ), 
                         m("div.field", 
                             m("span.leftlab", "Battery status: "), t.data.battstatus ), 
                         m("span.errmsg", t.errmsg),
@@ -70,7 +77,7 @@ pol.core.statusInfo = class extends pol.core.Widget {
         
         
     getInfo() {
-        server.GET( "api/info", null, 
+        this.keys.getSelectedSrv().GET( "api/info", null, 
             st => {
                 this.data = st;
                 pol.widget.get("core.keySetup").setAuth(-1, true, false)

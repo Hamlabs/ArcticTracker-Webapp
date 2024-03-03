@@ -2,7 +2,7 @@
  Misc. common functions and mithril modules for UI via DOM. 
  Lite version of the one found in Polaric Server webapp2.
  
- Copyright (C) 2017-2022 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
+ Copyright (C) 2022-2024 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published 
