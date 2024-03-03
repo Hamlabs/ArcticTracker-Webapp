@@ -1,4 +1,5 @@
 
+
 body {background: #232}
 #heading {height: 20px; background: #232; color: white}
 #heading .menu span {margin-right: 0.4em; border: 1px outset; border-radius: 0.2em; 
@@ -25,14 +26,15 @@ div.menu img {margin-bottom: -9px; margin-right: 5px}
 div.menu img#fwd {margin-bottom: -3px; height: 17px}
 div.menu img#fwd:hover {background: green}
 div.key input {background: #eff}
+div.menu span.sel {color: #ffa; font-weight:bolder}
 
 .itemList {border-bottom: 2px solid #999; padding: 0em 0.3em 0.3em 2em}
-.itemList span.box {white-space: nowrap; margin-right: 0.6em; margin-bottom: 2px}
+.itemList span.box {white-space: nowrap; margin-right: 0.6em; margin-bottom: 2px;}
 .itemList span.box img {height: 0.9em; margin-bottom: -2px}
 .itemList {display: flex; flex-wrap: wrap}
 
 .itemList span.box span {
-    border: outset 1px; padding: 2px; padding-bottom: 0; border-radius: 2px;
+    border: outset 1px; padding: 2px; padding-bottom: 0; border-radius: 4px;
 }
 
 .itemList span.box span:hover {

@@ -77,7 +77,7 @@ pol.core.wifiSetup = class extends pol.core.Widget {
                         
                         m("div.field", 
                             m("span.leftlab", "FW update URL: "),  
-                            m(textInput, {value: t.data.fwurl, size: 32, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.]+$/i })),
+                            m(textInput, {value: t.data.fwurl, size: 32, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\/\:]+$/i })),
                         m("div.field", {className: "key"},
                             m("span.leftlab", "API Key: "),  
                             m(textInput, {value: t.data.apikey, size: 32, maxLength:128,  onchange: dirty, regex: /^.*$/i })), 
@@ -115,7 +115,7 @@ pol.core.wifiSetup = class extends pol.core.Widget {
             
         function update() {
             var obj = Object.assign({}, t.data); 
-            this.keys.getSelectedSrv().PUT( "api/wifi", JSON.stringify(obj),
+            t.keys.getSelectedSrv().PUT( "api/wifi", JSON.stringify(obj),
                 ()=> { 
                     t.dirty = false; 
                     t.data.apikey("");
