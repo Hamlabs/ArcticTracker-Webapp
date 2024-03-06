@@ -171,8 +171,8 @@ pol.core.keySetup = class extends pol.core.Widget {
         
 
         function reset() {
+            t.trackerid("");
             t.key("");
-            t.getSelected().removeKey();
         }
 
             
@@ -191,18 +191,15 @@ pol.core.keySetup = class extends pol.core.Widget {
     getSelectedSrv() {
         return this.myServers[this.selected];
     }
-                
+        
+        
     select(i) {
         if (i==null || i<0)
             return;
         const tr = this.myTrackers[i];
         if (! tr.server || tr.server==null) 
             tr.server = new pol.core.Server(tr.id);
-            
-        if (i==this.selected && this.myTrackers[i].access) {
-            setTimeout(show("core.statusInfo"), 500);
-            return;
-        }
+        
         this.selected = i;
         this.trackerid(this.getSelected().id);
         this.key("");
