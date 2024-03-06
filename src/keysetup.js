@@ -344,7 +344,6 @@ pol.core.keySetup = class extends pol.core.Widget {
         let t = this;
         this.clearerr();
         srv = t.getSelectedSrv();
-        console.log("SRV: ", srv);
         
         let auth_ok = false;
         setTimeout(()=> {

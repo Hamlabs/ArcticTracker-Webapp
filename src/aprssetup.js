@@ -50,15 +50,15 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                         m("div.field", 
                             m("span.leftlab", "Symbol (tab/sym): "),  
                             m(textInput, {id:"symbol", value: t.data.symbol, size: 2, maxLength:2, 
-                                onchange: dirty, regex: /^\.\.$/i })),
+                                onchange: dirty, regex: /^..$/i })),
                         m("div.field", 
                             m("span.leftlab", "Report comment: "),  
                             m(textInput, {id:"comment", value: t.data.comment, size: 25, maxLength:40, 
-                                onchange: dirty, regex: /^\.*$/i })), 
+                                onchange: dirty, regex: /^.*$/i })), 
                         m("div.field", 
                             m("span.leftlab", "Digipeater path: "),  
                             m(textInput, {id:"path", value: t.data.path, size: 25, maxLength:40, 
-                                onchange: dirty, regex: /^([a-zA-Z0-9\-]+)(,([a-zA-Z0-9\-]+))* $/i })),
+                                onchange: dirty, regex: /^([a-zA-Z0-9\-]+)(,([a-zA-Z0-9\-]+))*$/i })),
                         m("div.field", 
                             m("span.leftlab", "TX frequency: "),  
                             m(textInput, {id:"txfreq", value: t.data.txfreq, size: 7, maxLength:7, 
@@ -139,8 +139,8 @@ pol.core.aprsSetup = class extends pol.core.Widget {
             var obj = Object.assign({}, t.data); 
             toNumber(obj, "maxpause"); toNumber(obj, "minpause"); 
             toNumber(obj, "mindist"); toNumber(obj, "repeat"); toNumber(obj, "turnlimit");
-            
-            this.keys.getSelectedSrv().PUT( "api/aprs", JSON.stringify(obj),
+
+            t.keys.getSelectedSrv().PUT( "api/aprs", JSON.stringify(obj),
                 ()=> {  
                     t.dirty = false; 
                     t.clearerr();

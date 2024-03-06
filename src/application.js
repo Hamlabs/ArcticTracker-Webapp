@@ -24,7 +24,6 @@ function show(id) {
         var x = pol.widget.get(id);
         x.activate( $('#widget')[0] );
         selectedWidget = x;
-        console.log("Selected Widget: ", x);
     }
 }
 
@@ -63,7 +62,6 @@ function getSelectedId() {
 
 
 function isSel(x) {
-    console.log("GAKK: ", x, selectedWidget);
     if (selectedWidget != null && selectedWidget.classname==x)
         return ".sel";
     else

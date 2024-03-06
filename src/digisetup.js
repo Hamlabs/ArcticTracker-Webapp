@@ -52,7 +52,7 @@ pol.core.digiSetup = class extends pol.core.Widget {
                         m("div.field", 
                             m("span.leftlab", "APRS/IS server: "),  
                             m(textInput, {id:"aprs_server", value: t.data.server, size: 25, maxLength:40, onchange: dirty,
-                                regex: /^[a-zA-Z0-9\-]+$/i })),
+                                regex: /^[a-zA-Z0-9\-\.]+$/i })),
                         m("div.field", 
                             m("span.leftlab", "Port number: "),  
                             m(textInput, {id:"server_port", value: t.data.port, size: 5, maxLength:5, onchange: dirty,
