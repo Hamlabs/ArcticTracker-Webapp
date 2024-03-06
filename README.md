@@ -10,5 +10,5 @@ This webapp is included in the Arctic Tracker firmware. Point your web-broser to
 
 You can enter the callsign and the api-key in the "Access and Key setup" and press "add". Alternatively you can use the IP-address instead of the callsign (if connected to its soft-ap or not on the same LAN). If the we are successfully authenticated with the tracker, the callsign/IP will become green. You can remove it by pressing the red cross on the left side of the symbol.  
 
-To install your own version you copy the webabb to a location where it can be reached by your web-browser. 
+To install your own version you copy the webapp to a location where it can be reached by your web-browser. 
 
