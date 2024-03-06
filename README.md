@@ -1,2 +1,14 @@
 # ArcticTracker-Webapp
-Web application for setup of Arctic Tracker using REST API
+Web application for setup of Arctic Tracker using the tracker's REST API.
+* It can handle muliple trackers and configure the most important settings. For full control, use the command shell via the USB port. 
+* Additional trackers on the same LAN can be automatically discovered using mDNS.
+* It uses strong authentication (Shared secret + HMAC).
+* It supports CORS so the origin of the webapp can be different from the tracker itself. 
+
+## Usage
+This webapp is included in the Arctic Tracker firmware. Point your web-broser to the tracker. The IP address and the mDNS hostname is shown on the display if connected to a WIFI access point. If the tracker is used as a soft-ap, you can also find the SSID and the IP-address on the display. The webapp can also be used from http://arctictracker.no/webapp (if connected via WIFI to your LAN). 
+
+You can enter the callsign and the api-key in the "Access and Key setup" and press "add". Alternatively you can use the IP-address instead of the callsign (if connected to its soft-ap or not on the same LAN). If the we are successfully authenticated with the tracker, the callsign/IP will become green. You can remove it by pressing the red cross on the left side of the symbol.  
+
+To install your own version you copy the webabb to a location where it can be reached by your web-browser. 
+
