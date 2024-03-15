@@ -97,8 +97,8 @@ pol.core.keySetup = class extends pol.core.Widget {
             
             
         setTimeout(scanTrackers,   2000);
-        setInterval(scanTrackers, 20000);
-        setInterval(scanMdns,     25000);
+        setInterval(scanTrackers, 25000);
+        setInterval(scanMdns,     15000);
         
         
         
@@ -120,8 +120,8 @@ pol.core.keySetup = class extends pol.core.Widget {
         function scanMdns() {
             /* Use the first active tracker found to discover other trackers through mDNS */
             for (const i in t.myTrackers)
-                if (t.myTrackers[i] && t.myTrackers[i].server && 
-                       typeof t.myTrackers[i].server.GET == "function" &&  t.myTrackers[i].access==true) {
+                if (t.myTrackers[i] && t.myServers[i] && t.myTrackers[i].access==true) {
+                    console.log("scanMdns", t.myTrackers[i]);
                     t.getMdns(i);
                     break;
                 }
@@ -376,9 +376,9 @@ pol.core.keySetup = class extends pol.core.Widget {
         let srv = null;
         let t = this;
         if (!i || i==-1)
-            srv = server;
+            srv = t.getSelectedSrv();
         else
-            srv = t.myTrackers[i].server;
+            srv = t.myServers[i];
         
         srv.GET( "api/trackers", null, 
             ttr => {
