@@ -31,6 +31,7 @@ pol.core.keySetup = class extends pol.core.Widget {
         
         /* Dirty bit */
         t.dirty = false; 
+        t.editmode = false; 
         
         
         this.widget = {
@@ -52,7 +53,7 @@ pol.core.keySetup = class extends pol.core.Widget {
                         br,                     
                         m("div.field", 
                             m("span.leftlab", "Tracker id: "),  
-                            m(textInput, {value: t.trackerid, size: 15, maxLength:32,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.]+$/i })),
+                            m(textInput, {value: t.trackerid, size: 15, maxLength:32,  onchange: dirtyid, regex: /^[a-zA-Z0-9\-\.]+$/i })),
                         m("div.field", {className: "key"},
                             m("span.leftlab", "Server key: "),  
                             m(textInput, {value: t.key, size: 32, maxLength:128,  onchange: dirty, regex: /^.*$/i })),
@@ -62,9 +63,9 @@ pol.core.keySetup = class extends pol.core.Widget {
                       
                         m("div.butt", 
                             m("img.upd", {src: (t.dirty ? "img/warn.png" : "img/ok.png")}),
-                            m("button", { type: "button", onclick: update}, "Update"),
+                            m("button", { type: "button", disabled: t.editmode, onclick: add}, "Add"),
+                            m("button", { type: "button", disabled: !t.editmode, onclick: update}, "Update"),
                             m("button", { type: "button", onclick: reset}, "Clear"),
-                            m("button", { type: "button", onclick: add}, "Add"),
                             m("span.errmsg", t.errmsg)
                         )
                     ])
@@ -81,9 +82,12 @@ pol.core.keySetup = class extends pol.core.Widget {
                 else
                     t.selected = 0;
                 
-                for (const i in t.myTrackers)
-                    t.myServers[i] = new pol.core.Server(t.myTrackers[i].id)
+                for (const i in t.myTrackers) {
+                    t.setAuth(i, false, false);
+                    t.myServers[i] = new pol.core.Server(t.myTrackers[i].id);
+                }
                 m.redraw();
+                console.log("myTrackers/myServers", t.myTrackers,t.myServers); 
              });
             
         datastore.getItem("arctic.selected")
@@ -98,9 +102,10 @@ pol.core.keySetup = class extends pol.core.Widget {
             
         setTimeout(scanTrackers,   2000);
         setInterval(scanTrackers, 25000);
-        setInterval(scanMdns,     15000);
+        setInterval(scanMdns,     25000);
         
         
+        $("#trackerid").change( ()=>{alert("bert")} );
         
         function _select(i) {
             t.select(i);
@@ -121,7 +126,6 @@ pol.core.keySetup = class extends pol.core.Widget {
             /* Use the first active tracker found to discover other trackers through mDNS */
             for (const i in t.myTrackers)
                 if (t.myTrackers[i] && t.myServers[i] && t.myTrackers[i].access==true) {
-                    console.log("scanMdns", t.myTrackers[i]);
                     t.getMdns(i);
                     break;
                 }
@@ -153,12 +157,7 @@ pol.core.keySetup = class extends pol.core.Widget {
             /* Key */
             if (t.key() == "")
                 return;
-            t.getSelectedSrv().setKey(t.key())
-              .then( ()=> {
-                 t.key("");
-                 t.dirty = false; 
-                 t.getInfo();
-              });
+            t.setKey(t.key());
             m.redraw();
         }
         
@@ -169,10 +168,16 @@ pol.core.keySetup = class extends pol.core.Widget {
         }
         
         
+        function dirtyid() {
+            t.editmode = false;
+        }
+        
+        
 
         function reset() {
             t.trackerid("");
             t.key("");
+            t.editmode = false;
         }
 
             
@@ -201,6 +206,7 @@ pol.core.keySetup = class extends pol.core.Widget {
             tr.server = new pol.core.Server(tr.id);
         
         this.selected = i;
+        this.editmode = true;
         this.trackerid(this.getSelected().id);
         this.key("");
         datastore.setItem("arctic.selected", i);
@@ -217,8 +223,8 @@ pol.core.keySetup = class extends pol.core.Widget {
         let orig = i;
         do {
             i = (i+1) % this.myTrackers.length;
-            this.select(i);
-        } while (!this.isAvailable() && i != orig);
+        } while (this.isAvailable(i)==false && i != orig);
+        this.select(i);
     }
     
     
@@ -233,8 +239,8 @@ pol.core.keySetup = class extends pol.core.Widget {
         do {
             i = i-1;
             if (i<0) i=this.myTrackers.length-1;
-            this.select(i);
-        } while (!this.isAvailable() && i != orig);
+        } while (this.isAvailable(i)==false && i != orig);
+        this.select(i);
     }
     
         
@@ -247,15 +253,20 @@ pol.core.keySetup = class extends pol.core.Widget {
             return false;
         }
         const i = this.myTrackers.push( { id:id, access:false, denied:false} ) - 1; 
-        const j = this.myServers.push( new pol.core.Server(id) );
+        const j = this.myServers.push( new pol.core.Server(id) ) -1;
         if (i != j)
-            console.error("Tracker-list doesn't correspond to server-list");
+            console.error("Tracker-list doesn't correspond to server-list", i,j);
+        
+        this.selected = i;
+        if (this.key() != "")
+            this.setKey(this.key());
         
         this.dirty = false;
         datastore.setItem("arctic.mytrackers", this.myTrackers);
         m.redraw();
         console.log("Added tracker: "+id+ " trying to ping it.", i);
-        this.pingTracker(i);
+        this.pingTracker(i);            
+        console.log("myTrackers/myServers", this.myTrackers,this.myServers); 
         return true;
     }
     
@@ -265,7 +276,6 @@ pol.core.keySetup = class extends pol.core.Widget {
      * Remove tracker from the list.
      */    
     removeTracker(i) {
-        console.log("removeTracker: "+i);
         this.myTrackers.splice(i, 1);
         this.myServers.splice(i, 1);
         datastore.setItem("arctic.mytrackers", this.myTrackers);
@@ -273,12 +283,29 @@ pol.core.keySetup = class extends pol.core.Widget {
                 this.selected--;
         datastore.setItem("arctic.selected", this.selected);
     }
+    
+    
         
+    setKey(k) {
+        this.getSelectedSrv().setKey(k)
+              .then( ()=> {
+                 this.key("");
+                 this.dirty = false; 
+                 setTimeout(()=> this.getInfo(this.selected), 500);
+                 m.redraw();
+              });
+    }
+    
         
+    hasKey() {
+        return this.trackerid() != "" && this.getSelected() && this.getSelectedSrv() &&
+            this.getSelectedSrv().key != null;
+    }
+    
+      
                 
     pingTracker(i) {
         const t = this;
-        t.myTrackers[i].access=false;
         this.dirty = false;
         if (t.myServers[i].key != null)
             t.getInfo(i);
@@ -295,13 +322,7 @@ pol.core.keySetup = class extends pol.core.Widget {
         return false;
     }
         
-
-    hasKey() {
-        return this.getSelected() && this.getSelected().server &&
-            this.getSelected().server.key != null;
-    }
-    
-        
+  
     /* 
      * Return true if we are authorised for access to the selected tracker.
      */ 
@@ -311,7 +332,9 @@ pol.core.keySetup = class extends pol.core.Widget {
     isAvailable() 
         {return this.auth && this.getSelected().access}
         
-    
+    isAvailable(i)
+        {return this.myTrackers.access;}
+        
     /* 
      * Set if we are authorised for access to the selected tracker.
      * a = we have acccess. d = access is denied. 
@@ -336,20 +359,20 @@ pol.core.keySetup = class extends pol.core.Widget {
         
         
     /* 
-     * Contact the REST API of the selected tracker to determine if we are 
+     * Contact the REST API of the given tracker to determine if we are 
      * authenticated and authorised for access. 
      */    
     getInfo(i) {
         let srv = null;
         let t = this;
         this.clearerr();
-        srv = t.getSelectedSrv();
+        srv = t.myServers[i];
         
         let auth_ok = false;
-        setTimeout(()=> {
-            if (auth_ok == false) {
+        let tout = setTimeout(()=> {
+            if (auth_ok == false && t.isAvailable()) {
                 t.setAuth(i, false, false); 
-                t.showError(i, "Timeout (no response)");
+                t.showError(i, "Timeout (no response): "+ t.myTrackers[i].id);
             }
         }, 10000);
         
@@ -357,16 +380,21 @@ pol.core.keySetup = class extends pol.core.Widget {
             st => {
                 t.setAuth(i, true, false);
                 auth_ok = true;
+                clearTimeout(tout);
                 m.redraw();
             },            
             (x,y,z) => { 
+                clearTimeout(tout);
+                if (t.isAvailable()==false || i >= this.myTrackers.size())
+                    return;
                 const denied = (x.status != null && x.status==401) 
                 t.setAuth(i, false, denied); 
+                clearTimeout(tout);
                 m.redraw();
                 if (denied) 
-                    t.showError(i, "Access denied");
+                    t.showError(i, "Access denied: "+ t.myTrackers[i].id);
                 else
-                    t.showError(i, "Cannot GET data (se browser log)", x);
+                    t.showError(i, "Cannot GET data: "+ t.myTrackers[i].id);
             }
         );
     }

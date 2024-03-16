@@ -123,7 +123,6 @@ pol.core.Server = class {
         await pol.security.hmac_getKey(secret)
            .then( x=> {
                this.key = x;
-               console.log("setKey: "+x);
                datastore.setItem("arctic.key."+this.id, x);
             } );
         return true;

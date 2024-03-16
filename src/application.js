@@ -27,7 +27,7 @@ function show(id) {
     }
 }
 
-setTimeout(show("core.keySetup"), 300);
+setTimeout(show("core.keySetup"), 400);
 
 
 function nextTracker() {
