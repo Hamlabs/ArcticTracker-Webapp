@@ -1,3 +1,4 @@
+![APRS configuration](Screenshot.1.png)
 # ArcticTracker-Webapp
 Web application for setup of Arctic Tracker using the tracker's REST API.
 * It can handle muliple trackers and configure the most important settings. For full control, use the command shell via the USB port. 
