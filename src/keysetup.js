@@ -385,7 +385,7 @@ pol.core.keySetup = class extends pol.core.Widget {
             },            
             (x,y,z) => { 
                 clearTimeout(tout);
-                if (t.isAvailable()==false || i >= this.myTrackers.size())
+                if (t.isAvailable()==false || i >= this.myTrackers.length)
                     return;
                 const denied = (x.status != null && x.status==401) 
                 t.setAuth(i, false, denied); 
