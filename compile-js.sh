@@ -13,6 +13,6 @@ $BABEL $D/secUtils.js $D/widget.js $D/server.js $D/uiSupport.js $D/keysetup.js $
 # combine and minify css
 #
 cd style
-cat widget.css style.css | cleancss -o style-min.css
+cat widget.css style.css mobil.css | cleancss -o style-min.css
 
 cd ..

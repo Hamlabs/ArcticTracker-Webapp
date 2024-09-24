@@ -44,7 +44,7 @@ pol.core.statusInfo = class extends pol.core.Widget {
                         m("div.field", 
                             m("span.leftlab", "Filesystem size: "), toKbytes(t.data.sizefs)), 
                         m("div.field", 
-                            m("span.leftlab", "Filesystem free space: "), toKbytes(t.data.freefs)), 
+                            m("span.leftlab", "Filesyst. free space: "), toKbytes(t.data.freefs)), 
                       
                         m("div.field", 
                             m("span.leftlab", "Connected AP: "), t.data.ap ),

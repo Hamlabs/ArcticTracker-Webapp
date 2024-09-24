@@ -55,10 +55,10 @@ pol.core.trklogSetup = class extends pol.core.Widget {
                             m(checkBox, {checked: t.data.trkpost_on, onclick: toggle("trkpost_on") }, "Activate")), 
                         m("div.field", 
                             m("span.leftlab", "Server URL: "),  
-                            m(textInput, {value: t.data.url, size: 32, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\:\/]+$/i })),
+                            m(textInput, {id: "srv", value: t.data.url, size: 31, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\:\/]+$/i })),
                         m("div.field", 
                             m("span.leftlab", "Server key: "),  
-                            m(textInput, {value: t.data.key, size: 32, maxLength:128,  onchange: dirty, regex: /^.*$/i })),
+                            m(textInput, {id: "key", value: t.data.key, size: 31, maxLength:128,  onchange: dirty, regex: /^.*$/i })),
                       
                         m("div.butt", 
                             m("img.upd", {src: (t.dirty ? "img/warn.png" : "img/ok.png")}),

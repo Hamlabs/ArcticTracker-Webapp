@@ -42,7 +42,7 @@ const textInput = {
         var t = this;
         var type = (!vn.attrs.passwd || vn.attrs.passwd==false ? "text" : "password");
  
-        return m("input#"+vn.attrs.id, 
+        return m("input"+(vn.attrs.id != null? "#"+vn.attrs.id : ""), 
         { type: type, list: vn.attrs.list, config: vn.attrs.config, size: vn.attrs.size, maxLength: vn.attrs.maxLength, 
           contentEditable: (vn.attrs.contentEditable ? vn.attrs.contentEditable : true),
                 
@@ -51,19 +51,19 @@ const textInput = {
                 if (!vn.attrs.regex) 
                     return;                
                 if (vn.attrs.regex.test(ev.target.value)) {
-                    vn.state.cssclass = "valid";
+                    vn.state.cssclass = vn.attrs.className+" valid";
                     vn.dom.title = "Input OK";
                     $(vn.dom).attr("ok", true);
                 }
                 else {
-                    vn.state.cssclass = "invalid";
+                    vn.state.cssclass = vn.attr.className+" invalid";
                     vn.dom.title = "Invalid input!";
                     $(vn.dom).attr("ok", false);
                 }    
             },
             onchange: function(ev) {
                 vn.attrs.value(ev.target.value);
-                t.cssclass = "";
+                t.cssclass = vn.attrs.className+"";
                 if (vn.attrs.onchange !=null)
                     vn.attrs.onchange();
             },
@@ -84,7 +84,7 @@ const textInput = {
 const checkBox = {
     view: function(vn) {
         return m("span.nobr", {title: vn.attrs.title}, 
-            m("input#" + vn.attrs.id, 
+            m("input"+(vn.attrs.id != null? "#"+vn.attrs.id : ""),
          {
             onclick: vn.attrs.onclick,
             type:"checkbox", name: vn.attrs.name, value: vn.attrs.id, 
@@ -105,7 +105,7 @@ const checkBox = {
  */ 
 const select = {
     view: function(vn) {
-        return m("select#"+vn.attrs.id, {onchange: vn.attrs.onchange}, vn.attrs.list.map(
+        return m("select"+(vn.attrs.id != null? "#"+vn.attrs.id : ""), {onchange: vn.attrs.onchange}, vn.attrs.list.map(
             x => m("option", {value: x.val, style: x.style}, x.label) ));
     }
 }

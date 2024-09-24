@@ -53,11 +53,11 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                                 onchange: dirty, regex: /^..$/i })),
                         m("div.field", 
                             m("span.leftlab", "Report comment: "),  
-                            m(textInput, {id:"comment", value: t.data.comment, size: 25, maxLength:40, 
+                            m(textInput, {id:"comment", value: t.data.comment, size: 24, maxLength:40, 
                                 onchange: dirty, regex: /^.*$/i })), 
                         m("div.field", 
                             m("span.leftlab", "Digipeater path: "),  
-                            m(textInput, {id:"path", value: t.data.path, size: 25, maxLength:40, 
+                            m(textInput, {id:"path", value: t.data.path, size: 24, maxLength:40, 
                                 onchange: dirty, regex: /^([a-zA-Z0-9\-]+)(,([a-zA-Z0-9\-]+))*$/i })),
                         m("div.field", 
                             m("span.leftlab", "TX frequency: "),  
@@ -69,11 +69,11 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                                 onchange: dirty, regex: /^[0-9]{7}$/i })), br,
                       
                         m("div.field", 
-                            m("span.leftlab", {class: "subsect"}, "Tracking attributes: "), [
-                                m(checkBox, {id: "timestamp_on", checked: t.data.timestamp, onclick: toggle("timestamp")}, "Timestamp "), nbsp,
-                                m(checkBox, {id: "compress_on", checked: t.data.compress, onclick: toggle("compress")}, "Compress "), nbsp,
-                                m(checkBox, {id: "altitude_on", checked: t.data.altitude, onclick: toggle("altitude")}, "Altitude ")
-                            ]), 
+                            m("span.leftlab", {class: "subsect"}, "Tracking attributes: "), m("span.check", [
+                                m("label", m(checkBox, {id: "timestamp_on", checked: t.data.timestamp, onclick: toggle("timestamp")}, "Timestamp ")), nbsp,
+                                m("label", m(checkBox, {id: "compress_on",  checked: t.data.compress,  onclick: toggle("compress")}, "Compress ")), " ", 
+                                m("label", m(checkBox, {id: "altitude_on",  checked: t.data.altitude,  onclick: toggle("altitude")}, "Altitude "))
+                            ])), 
                         
                         m("div.field", 
                             m("span.leftlab", "Turn limit: "),  

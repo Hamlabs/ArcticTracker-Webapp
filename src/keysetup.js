@@ -53,10 +53,10 @@ pol.core.keySetup = class extends pol.core.Widget {
                         br,                     
                         m("div.field", 
                             m("span.leftlab", "Tracker id: "),  
-                            m(textInput, {value: t.trackerid, size: 15, maxLength:32,  onchange: dirtyid, regex: /^[a-zA-Z0-9\-\.]+$/i })),
+                            m(textInput, {id: "trid", value: t.trackerid, size: 15, maxLength:32,  onchange: dirtyid, regex: /^[a-zA-Z0-9\-\.]+$/i })),
                         m("div.field", {className: "key"},
                             m("span.leftlab", "Server key: "),  
-                            m(textInput, {value: t.key, size: 32, maxLength:128,  onchange: dirty, regex: /^.*$/i })),
+                            m(textInput, {id: "srvkey", value: t.key, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i })),
                         m("div.field", 
                             m("span.leftlab", "Key set: "),  
                             m("span", (t.hasKey() ? "Yes" : "No"))), 
@@ -139,6 +139,11 @@ pol.core.keySetup = class extends pol.core.Widget {
         function add() {
             t.addTracker(t.trackerid());
             t.dirty = false;
+            
+            /* Key */
+            if (t.key() == "")
+                return;
+            t.setKey(t.key());
         }
         
         

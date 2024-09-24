@@ -2,14 +2,16 @@
 
 body {background: #232}
 #heading {height: 20px; background: #232; color: white}
-#heading .menu span {margin-right: 0.4em; border: 1px outset; border-radius: 0.2em; 
+#heading .menu span#buttons span {margin-right: 0.4em; border: 1px outset; border-radius: 0.2em; 
      background: #242; padding: 3px 6px 1px; font-family: helvetica, sans-serif}
-#heading .menu span:hover {background: #464}
+#heading .menu span#buttons span:hover {background: #464}
+#heading {display: inline; line-height: 1.8em}
+#heading .menu span#idselect {margin-right: 0.5em; display: inline-block; height: 1.6em;  margin-bottom: -5px; }
 
 #widget  { 
   font-family: Helvetica, sans-serif;
   font-size: 96%; 
-  margin-top: 8px; 
+  margin-top: 5px; 
   min-height: 10em; 
   background: #f0f0f0; 
   max-width: 36em; 
@@ -21,12 +23,14 @@ input {height: 1.25em !important}
 img.upd { margin-bottom: -6px}
 
 .errmsg {color :#a00; margin-left: 2em; margin-right: 2em; font-style: italic}
-
-div.menu img {margin-bottom: -9px; margin-right: 5px}
-div.menu img#fwd {margin-bottom: -3px; height: 17px}
+   
+div.menu {padding: 0.1em;}
+div.menu img {margin-bottom: -6px; margin-right: 5px}
+div.menu img#fwd {margin-bottom: -3px; height: 1.2em; width: 1.3em}
 div.menu img#fwd:hover {background: green}
 div.key input {background: #eff}
 div.menu span.sel {color: #ffa; font-weight:bolder}
+
 
 .itemList {border-bottom: 2px solid #999; padding: 0em 0.3em 0.3em 2em}
 .itemList span.box {white-space: nowrap; margin-right: 0.6em; margin-bottom: 2px;}

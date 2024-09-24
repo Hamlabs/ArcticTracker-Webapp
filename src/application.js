@@ -76,13 +76,21 @@ menu = {
         return m("div.menu", [ 
             m("img",  {onclick: show("core.keySetup"), 
                  src: (isOpen() ? "img/unlocked.png" : "img/locked.png") }),
-            m("span"+isSel("core.statusInfo"),  {onclick: show("core.statusInfo")},   "Status"),
-            m("span"+isSel("core.wifiSetup"),   {onclick: show("core.wifiSetup")},    "Wifi"),   
-            m("span"+isSel("core.aprsSetup"),   {onclick: show("core.aprsSetup")},    "Aprs"),
-            m("span"+isSel("core.digiSetup"),   {onclick: show("core.digiSetup")},    "Digi/Igate"), 
-            m("span"+isSel("core.trklogSetup"), {onclick: show("core.trklogSetup")},  "Trklog"), nbsp, getSelectedId(), nbsp,
-            m("img", {src:"img/back.png", id: "fwd", onclick: prevTracker}),
-            m("img", {src:"img/forward.png", id: "fwd", onclick: nextTracker})
+            
+            m("span#idselect", [
+                getSelectedId(), nbsp,
+                m("img", {src:"img/back.png", id: "fwd", onclick: prevTracker}),
+                m("img", {src:"img/forward.png", id: "fwd", onclick: nextTracker}),
+            ]),
+            
+            m("span#buttons", [
+                m("span"+isSel("core.statusInfo"),  {onclick: show("core.statusInfo")},   "Status"),
+                m("span"+isSel("core.wifiSetup"),   {onclick: show("core.wifiSetup")},    "Wifi"),   
+                m("span"+isSel("core.aprsSetup"),   {onclick: show("core.aprsSetup")},    "Aprs"),
+                m("span"+isSel("core.digiSetup"),   {onclick: show("core.digiSetup")},    "Digi/Igate"), 
+                m("span"+isSel("core.trklogSetup"), {onclick: show("core.trklogSetup")},  "Trklog"), 
+            ]),
+
         ])
     }
 };

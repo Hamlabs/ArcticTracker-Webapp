@@ -43,15 +43,15 @@ pol.core.digiSetup = class extends pol.core.Widget {
                                 m(checkBox, {id: "digi_on",  checked: t.data.digiOn, onclick: toggle("digiOn") }, "Activate")), 
                         m("div.field", 
                             m("span.leftlab", "Digipeat modes: "), [
-                                m(checkBox, {id: "wide1_on", checked: t.data.wide1, onclick: toggle("wide1")}, "Wide-1 (fill-in) "), nbsp,
-                                m(checkBox, {id: "sar_on", checked: t.data.sar, onclick: toggle("sar")}, "Preemption on SAR")
+                                m(checkBox, {id: "wide1_on", checked: t.data.wide1, onclick: toggle("wide1")}, "Wide-1 "), nbsp,
+                                m(checkBox, {id: "sar_on", checked: t.data.sar, onclick: toggle("sar")}, "SAR preempt ")
                             ]), br,
                         m("div.field", 
                             m("span.leftlab", {class: "subsect"}, "Internet gate: "),  
                                 m(checkBox, {id: "igate_on", checked: t.data.igateOn, onclick: toggle("igateOn")}, "Activate")) ,
                         m("div.field", 
                             m("span.leftlab", "APRS/IS server: "),  
-                            m(textInput, {id:"aprs_server", value: t.data.server, size: 25, maxLength:40, onchange: dirty,
+                            m(textInput, {id:"aprs_server", value: t.data.server, size: 20, maxLength:40, onchange: dirty,
                                 regex: /^[a-zA-Z0-9\-\.]+$/i })),
                         m("div.field", 
                             m("span.leftlab", "Port number: "),  
