@@ -8,7 +8,7 @@ Web application for setup of Arctic Tracker using the tracker's REST API.
 * Responsive design. 
 
 ## Usage
-This webapp is included in the Arctic Tracker firmware. Point your web-broser to the tracker. The IP address and the mDNS hostname is shown on the display if connected to a WIFI access point. The browser and the tracker has to be on the same LAN. If the tracker is used as a soft-ap, you can also find the SSID and the IP-address on the display. The webapp can also be used from http://arctictracker.no/webapp (if your trackers are connected via WIFI to your LAN). 
+This webapp is included in the Arctic Tracker firmware. Point your web-broser to the tracker. The IP address and the mDNS hostname is shown on the display if connected to a WIFI access point. The browser and the tracker has to be on the same LAN. If the tracker is used as a soft-ap, you can also find the SSID and the IP-address on the display. The webapp can also be used from http://arctictracker.no/webapp (if your trackers are connected via WIFI to your LAN). A smartphone app (Android) is under way.
 
 Currently the tracker uses a *self-signed certificate* so you may need to accept the certificate the first time you use it from a browser. It is a good idea to try access the tracker directly from your web-browser when its firmware is updated to make sure that the certificate-exception is there.   
 
