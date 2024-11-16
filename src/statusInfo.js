@@ -35,6 +35,7 @@ pol.core.statusInfo = class extends pol.core.Widget {
             view: function() {
                 return m("div", [       
                     m("h1", "Status Info"),
+                    (t.errmsg != null ? m("div#errmsg", t.errmsg) : null),
                     m("form.status", [  
                         m("div.field", 
                             m("span.leftlab", "Free heap: "), toKbytes(t.data.heap)), 
@@ -59,8 +60,7 @@ pol.core.statusInfo = class extends pol.core.Widget {
                         m("div.field", 
                             m("span.leftlab", "Battery voltage: "), t.data.vbatt + " V  ("+t.data.vpercent+" %)" ), 
                         m("div.field", 
-                            m("span.leftlab", "Battery status: "), t.data.battstatus ), 
-                        m("span.errmsg", t.errmsg),
+                            m("span.leftlab", "Battery status: "), t.data.battstatus ), br
                     ])
                 ])
             }

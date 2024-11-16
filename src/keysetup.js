@@ -10,7 +10,7 @@ pol.core.keySetup = class extends pol.core.Widget {
         super();
         const t = this;
         t.classname = "core.keySetup"; 
-        
+
         /* 
          * List of associated trackers and which of them is selected. 
          * If selected is -1 this means that no trackers are selected. 
@@ -33,12 +33,19 @@ pol.core.keySetup = class extends pol.core.Widget {
         t.dirty = false; 
         t.editmode = false; 
         
+        /* External function to scan mDNS. If null, we use
+         * a tracker via REST API
+         */
+        t.scanMdns = null; 
+        
         
         this.widget = {
             view: function() {
                 let i=0;
-                return m("div", [       
+                return m("div#keysetup", [       
                     m("h1", "Access and Key setup"),     
+    
+                    
                     m("div.itemList", t.myTrackers.map( x=> {
                         const cls = (x.access ? "allowed" : 
                             (x.denied ? "denied" : 
@@ -50,7 +57,9 @@ pol.core.keySetup = class extends pol.core.Widget {
                     })),
                     
                     m("form.key", [  
-                        br,                     
+                        br,
+                        (t.errmsg != null && t.errmsg != "" ? m("div#errmsg", t.errmsg) : null),
+
                         m("div.field", 
                             m("span.leftlab", "Tracker id: "),  
                             m(textInput, {id: "trid", value: t.trackerid, size: 15, maxLength:32,  onchange: dirtyid, regex: /^[a-zA-Z0-9\-\.]+$/i })),
@@ -66,7 +75,6 @@ pol.core.keySetup = class extends pol.core.Widget {
                             m("button", { type: "button", disabled: t.editmode, onclick: add}, "Add"),
                             m("button", { type: "button", disabled: !t.editmode, onclick: update}, "Update"),
                             m("button", { type: "button", onclick: reset}, "Clear"),
-                            m("span.errmsg", t.errmsg)
                         )
                     ])
                 ])
@@ -74,7 +82,7 @@ pol.core.keySetup = class extends pol.core.Widget {
         };
 
         
-        datastore.getItem("arctic.mytrackers")
+        CONFIG.datastore.getItem("arctic.mytrackers")
             .then( x=> {
                 t.myTrackers=x;
                 if (t.myTrackers == null) 
@@ -84,13 +92,13 @@ pol.core.keySetup = class extends pol.core.Widget {
                 
                 for (const i in t.myTrackers) {
                     t.setAuth(i, false, false);
-                    t.myServers[i] = new pol.core.Server(t.myTrackers[i].id);
+                    t.myServers[i] = new pol.core.Server(t.myTrackers[i].id, t.myTrackers[i].ipaddr);
                 }
                 m.redraw();
                 console.log("myTrackers/myServers", t.myTrackers,t.myServers); 
              });
             
-        datastore.getItem("arctic.selected")
+        CONFIG.datastore.getItem("arctic.selected")
             .then( x => {
                 if (x < 0)
                     return;
@@ -98,18 +106,15 @@ pol.core.keySetup = class extends pol.core.Widget {
                 m.redraw();
             });
             
-            
-            
         setTimeout(scanTrackers,   2000);
         setInterval(scanTrackers, 25000);
+        setTimeout( scanMdns,      6000);
         setInterval(scanMdns,     25000);
         
         
-        $("#trackerid").change( ()=>{alert("bert")} );
-        
         function _select(i) {
             t.select(i);
-            datastore.setItem("arctic.selected", i);
+            CONFIG.datastore.setItem("arctic.selected", i);
         }   
         
         
@@ -123,12 +128,16 @@ pol.core.keySetup = class extends pol.core.Widget {
         
         
         function scanMdns() {
-            /* Use the first active tracker found to discover other trackers through mDNS */
-            for (const i in t.myTrackers)
-                if (t.myTrackers[i] && t.myServers[i] && t.myTrackers[i].access==true) {
-                    t.getMdns(i);
-                    break;
-                }
+            if (t.scanMdns != null) {
+                t.scanMdns(t); 
+            }
+            else
+                /* Use the first active tracker found to discover other trackers through mDNS */
+                for (const i in t.myTrackers)
+                    if (t.myTrackers[i] && t.myServers[i] && t.myTrackers[i].access==true) {
+                        t.getMdns(i);
+                        break;
+                    }
         }
         
         
@@ -214,7 +223,7 @@ pol.core.keySetup = class extends pol.core.Widget {
         this.editmode = true;
         this.trackerid(this.getSelected().id);
         this.key("");
-        datastore.setItem("arctic.selected", i);
+        CONFIG.datastore.setItem("arctic.selected", i);
     }
         
     
@@ -252,13 +261,16 @@ pol.core.keySetup = class extends pol.core.Widget {
     /*
      * Add tracker to the list 
      */    
-    addTracker(id) {
+    addTracker(id, ipaddr) {
+        console.log("KEYSETUP ADD TRACKER: ", id, ipaddr);
         id = id.toUpperCase();
         if (this.exists(id)) {
             return false;
         }
-        const i = this.myTrackers.push( { id:id, access:false, denied:false} ) - 1; 
-        const j = this.myServers.push( new pol.core.Server(id) ) -1;
+        
+        /* Add tracker to list of trackers-ids and to list of servers */
+        const i = this.myTrackers.push( { id:id, ipaddr: ipaddr, access:false, denied:false} ) - 1; 
+        const j = this.myServers.push( new pol.core.Server(id, ipaddr) ) -1;
         if (i != j)
             console.error("Tracker-list doesn't correspond to server-list", i,j);
         
@@ -267,11 +279,10 @@ pol.core.keySetup = class extends pol.core.Widget {
             this.setKey(this.key());
         
         this.dirty = false;
-        datastore.setItem("arctic.mytrackers", this.myTrackers);
+        CONFIG.datastore.setItem("arctic.mytrackers", this.myTrackers);
         m.redraw();
         console.log("Added tracker: "+id+ " trying to ping it.", i);
         this.pingTracker(i);            
-        console.log("myTrackers/myServers", this.myTrackers,this.myServers); 
         return true;
     }
     
@@ -283,10 +294,10 @@ pol.core.keySetup = class extends pol.core.Widget {
     removeTracker(i) {
         this.myTrackers.splice(i, 1);
         this.myServers.splice(i, 1);
-        datastore.setItem("arctic.mytrackers", this.myTrackers);
+        CONFIG.datastore.setItem("arctic.mytrackers", this.myTrackers);
         if (this.selected >= i)
                 this.selected--;
-        datastore.setItem("arctic.selected", this.selected);
+        CONFIG.datastore.setItem("arctic.selected", this.selected);
     }
     
     
@@ -380,7 +391,7 @@ pol.core.keySetup = class extends pol.core.Widget {
                 t.showError(i, "Timeout (no response): "+ t.myTrackers[i].id);
             }
         }, 10000);
-        
+
         srv.GET( "api/info", null, 
             st => {
                 t.setAuth(i, true, false);

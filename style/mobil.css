@@ -25,11 +25,22 @@
   screen and (max-device-width: 500px),
   screen and (max-device-width: 33em) 
 {
+  .leftlab {width: 9em}
+   #keysetup .leftlab {width: 7em}
+   #wifi .ap .leftlab {width: 4em}
+   #wifi .leftlab {width: 7.5em}
+   #wifi .ap input {max-width: 9.2em}
+   .whead {width:8em; color: #666}
+   #digi .leftlab {width: 8em}
+   #trklog .leftlab {width: 7.6em}
+   span.check {width: 13.6em}
    #srvkey {max-width: 13em}
    #trid {max-width: 8em}
    .ap>input {max-width: 8em}
    #apikey, #fwupd, #srv, #key {max-width: 16.5em}
-   #comment, #path {max-width: 14em}
+   #tlsrv, #tlkey {max-width: 15em}
+   #comment, #path {max-width: 13.5em}
+   
 }
 
 

@@ -40,7 +40,7 @@ pol.core.aprsSetup = class extends pol.core.Widget {
             view: function() {
                 return m("div", [  
                     m("h1", "APRS configuration"),
-
+                    (t.errmsg != null ? m("div#errmsg", t.errmsg) : null),
                     m("form.aprs", [  
                     
                         m("div.field", 
@@ -68,8 +68,8 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                             m(textInput, {id:"rxfreq", value: t.data.rxfreq, size: 7, maxLength:7, 
                                 onchange: dirty, regex: /^[0-9]{7}$/i })), br,
                       
-                        m("div.field", 
-                            m("span.leftlab", {class: "subsect"}, "Tracking attributes: "), m("span.check", [
+                        m("div.field",                                    
+                            m("span.leftlab", {class: "subsect"}, "Track settings: "), m("span.check", [
                                 m("label", m(checkBox, {id: "timestamp_on", checked: t.data.timestamp, onclick: toggle("timestamp")}, "Timestamp ")), nbsp,
                                 m("label", m(checkBox, {id: "compress_on",  checked: t.data.compress,  onclick: toggle("compress")}, "Compress ")), " ", 
                                 m("label", m(checkBox, {id: "altitude_on",  checked: t.data.altitude,  onclick: toggle("altitude")}, "Altitude "))
@@ -96,7 +96,7 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                             m("span.leftlab", {class: "subsect"}, "Extra posreports: "), 
                             m(checkBox, {id: "extraturn", checked: t.data.extraturn, onclick: toggle("extraturn")}, "Add when turning") ), 
                         m("div.field", 
-                            m("span.leftlab", "Redundant reports: "),  
+                            m("span.leftlab", "N reports: "),  
                             m(textInput, {id:"repeat", value: t.data.repeat, size: 1, maxLength:2, 
                                 onchange: dirty, regex: /^[0-4]{1}$/i })),
                                  
@@ -104,7 +104,6 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                             m("img.upd", {src: (t.dirty ? "img/warn.png" : "img/ok.png")}),
                             m("button", { type: "button", onclick: update}, "Update"),
                             m("button", { type: "button", onclick: reset }, "Reset"),
-                            m("span.errmsg", t.errmsg),
                         )
                       
                     ])

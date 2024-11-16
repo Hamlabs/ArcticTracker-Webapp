@@ -11,6 +11,9 @@ localforage.config({
 var datastore = localforage.createInstance({
   name: "ArcticTracker"
 });
+CONFIG.datastore = datastore; 
+
+
 
 
 let selectedWidget = null;

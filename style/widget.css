@@ -37,7 +37,6 @@ input.invalid    {background: #fdd}
 
 input#search {margin-top: 0.7em; width: 18em}
 
-
 button {
  border:1px outset #bbb;
  padding:.18em;
@@ -60,7 +59,11 @@ button::-moz-focus-inner {
   border: none;
 }
 
-div.errmsg {color: red; margin-left: 2em; margin-bottom: 0.8em}
+
+div#waitmsg {color: #500; margin-left:1em; margin-right: 1em; margin-bottom: 0.6em; background: #fe7}
+div#errmsg {color: #500; margin-left:1em; margin-right: 1em; margin-bottom: 0.6em; background: #fdd}
+div#successmsg {color: #040; margin-left:1em; margin-right: 1em; margin-bottom: 0.6em; background: #cfc}
+div#errmsg, div#successmsg, div#waitmsg {border: 2px dotted; padding: 0.5em; padding-top: 0.3em}
 
 input {max-height: 1.4em; margin-bottom: 0.1em}
 button {padding: 0.1em 0.5em 0.1em 0.5em; margin-top: 0 }

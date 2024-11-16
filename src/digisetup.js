@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2022-2023 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
+ Copyright (C) 2022-2024 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published 
@@ -35,8 +35,9 @@ pol.core.digiSetup = class extends pol.core.Widget {
                 
         this.widget = {
             view: function() {
-                return m("div", [       
+                return m("div#digi", [       
                     m("h1", "Digi/Igate configuration"),
+                    (t.errmsg != null ? m("div#errmsg", t.errmsg) : null),
                     m("form.digi", [  
                         m("div.field", 
                             m("span.leftlab", {class: "subsect"}, "Digipeater: "),  
@@ -71,7 +72,6 @@ pol.core.digiSetup = class extends pol.core.Widget {
                             m("img.upd", {src: (t.dirty ? "img/warn.png" : "img/ok.png")}),
                             m("button", { type: "button", onclick: update}, "Update"),
                             m("button", { type: "button", onclick: reset}, "Reset"),
-                            m("span.errmsg", t.errmsg)
                         )
                       
                     ])

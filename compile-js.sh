@@ -7,7 +7,7 @@ BABEL="babeljs --minified --compact=true --no-comments"
 #
 
 D=src
-$BABEL $D/secUtils.js $D/widget.js $D/server.js $D/uiSupport.js $D/keysetup.js $D/statusInfo.js $D/wifisetup.js $D/aprssetup.js $D/digisetup.js $D/trklogsetup.js $D/application.js > arcticsetup-min.js
+$BABEL $D/secUtils.js $D/widget.js $D/server.js $D/uiSupport.js $D/keysetup.js $D/statusInfo.js $D/wifisetup.js $D/aprssetup.js $D/digisetup.js $D/trklogsetup.js > arcticsetup-min.js
 
 #
 # combine and minify css

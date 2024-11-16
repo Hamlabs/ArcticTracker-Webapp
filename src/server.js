@@ -19,6 +19,12 @@
 var pol = pol || {};
 pol.core = pol.core || {};
 
+let CONFIG = {
+    datastore: null
+}
+
+
+
 
 /* Generic call to REST API */
 pol.core.ajax = (type, service, data, success, error) => {
@@ -47,13 +53,16 @@ pol.core.Server = class {
     /**
      * Constructor.
      */
-    constructor(id) {
+    constructor(id, ipaddr) {
         const t = this;
         t.id = "NOCALL";
         t.url = "";
-        t.setId(id);
+        t.useip = false; 
+        t.setId(id, ipaddr);
         t.key = null;
-        datastore.getItem("arctic.key."+t.id)
+        
+        /* Try to get key from datastore */
+        CONFIG.datastore.getItem("arctic.key."+t.id)
             .then( x=> {t.key=x;});
     }
     
@@ -123,7 +132,7 @@ pol.core.Server = class {
         await pol.security.hmac_getKey(secret)
            .then( x=> {
                this.key = x;
-               datastore.setItem("arctic.key."+this.id, x);
+               CONFIG.datastore.setItem("arctic.key."+this.id, x);
             } );
         return true;
     }
@@ -131,22 +140,35 @@ pol.core.Server = class {
     
     /* Remove the secret key */
     removeKey() {
-        datastore.removeItem("arctic.key."+this.id);
+        CONFIG.datastore.removeItem("arctic.key."+this.id);
         this.key = null;
     }
     
     
     setUrl(u) {
-        console.log("setUrl: "+u);
         this.url = u;
     }
     
-    setId(id) {
+    
+    setId(id, ipaddr) {
+        console.log("SERVER SET ID: ", id, ipaddr, this.useip);
         this.id=id;
-        if (/http(s)?:\/\//.test(id))
+        
+        if (this.useip)
+            return;
+        if (ipaddr != null) {
+            this.setUrl("https://" +ipaddr+ "/");
+            this.useip = true;
+        }
+        /* If argument is a a url */
+        else if (/http(s)?:\/\//.test(id))
             this.setUrl(id);
+        
+        /* If it is a callsign */
         else if (/[A-Za-z0-9\-]+$/.test(id))
             this.setUrl("https://Arctic-" + id.toUpperCase() +".local/");
+        
+        /* Else (IP address) */
         else
             this.setUrl("https://" +id+"/");
     }

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2022-2023 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
+ Copyright (C) 2022-2024 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published 
@@ -39,54 +39,59 @@ pol.core.wifiSetup = class extends pol.core.Widget {
         
         this.widget = {
             view: function() {
-                return m("div", [  
+                return m("div#wifi", [  
                     m("h1", "WIFI / Internet configuration"),
+                    (t.errmsg != null ? m("div#errmsg", t.errmsg) : null),
                     m("form.aprs", [  
-                        
                         m("div.field", 
-                            m("span.leftlab", "Soft AP SSID: "),  
+                            m("span.leftlab", "SoftAP SSID: "),  
                             t.data.apssid),
                         m("div.field", 
-                            m("span.leftlab", "Soft AP password: "),  
-                            m(textInput, {passwd: true, value: t.data.appass, size: 12, maxLength:64,  onchange: dirty, regex: /^.*$/i })), br,
+                            m("span.leftlab", "SoftAP passwd: "),  
+                            m(textInput, {passwd: true, value: t.data.appass, size: 14, maxLength:64,  onchange: dirty, regex: /^.*$/i })), br,
                 
+                      
+                        m("div.field", {className: "ap"}, 
+                            m("span.leftlab", ""),
+                            m("span.whead", "SSID"),
+                            m("span.whead", "Password")
+                        ),
                         m("div.field", {className: "ap"},  
-                            m("span.leftlab", "AP 1 (ssid,passwd): "),  
+                            m("span.leftlab", "AP 1: "),  
                             m(textInput, {value: t.data.ap_0_ssid, size: 12, maxLength:32,  onchange: dirty, regex: /^.*$/i }), 
                             m(textInput, {passwd: true, value: t.data.ap_0_pw, size: 12, maxLength:64, onchange: dirty, regex: /^.*$/i })), 
                         m("div.field", {className: "ap"},
-                            m("span.leftlab", "AP 2 (ssid,passwd): "),  
+                            m("span.leftlab", "AP 2: "),  
                             m(textInput, {value: t.data.ap_1_ssid, size: 12, maxLength:32,  onchange: dirty, regex: /^.*$/i }), 
                             m(textInput, {passwd: true, value: t.data.ap_1_pw, size: 12, maxLength:64,  onchange: dirty, regex: /^.*$/i })),  
                         m("div.field", {className: "ap"},
-                            m("span.leftlab", "AP 3 (ssid,passwd): "),  
+                            m("span.leftlab", "AP 3: "),  
                             m(textInput, {value: t.data.ap_2_ssid, size: 12, maxLength:32, onchange: dirty, regex: /^.*$/i }), 
                             m(textInput, {passwd: true, value: t.data.ap_2_pw, size: 12, maxLength:64, onchange: dirty, regex: /^.*$/i })), 
                         m("div.field", {className: "ap"},
-                            m("span.leftlab", "AP 4 (ssid,passwd): "),  
+                            m("span.leftlab", "AP 4: "),  
                             m(textInput, {value: t.data.ap_3_ssid, size: 12, maxLength:32, onchange: dirty, regex: /^.*$/i }), 
                             m(textInput, {passwd: true, value: t.data.ap_3_pw, size: 12, maxLength:64, onchange: dirty, regex: /^.*$/i })), 
                         m("div.field", {className: "ap"},
-                            m("span.leftlab", "AP 5 (ssid,passwd): "),  
+                            m("span.leftlab", "AP 5: "),  
                             m(textInput, {value: t.data.ap_4_ssid, size: 12, maxLength:32, onchange: dirty, regex: /^.*$/i }), 
                             m(textInput, {passwd: true, value: t.data.ap_4_pw, size: 12, maxLength:64, onchange: dirty, regex: /^.*$/i })), 
                         m("div.field", {className: "ap"},
-                            m("span.leftlab", "AP 6 (ssid,passwd): "),  
+                            m("span.leftlab", "AP 6: "),  
                             m(textInput, {value: t.data.ap_5_ssid, size: 12, maxLength:32, onchange: dirty, regex: /^.*$/i }), 
                             m(textInput, {passwd: true, value: t.data.ap_5_pw, size: 12, maxLength:64, onchange: dirty, regex: /^.*$/i })), br,
                         
                         m("div.field", 
-                            m("span.leftlab", "FW update URL: "),  
-                            m(textInput, {id: "fwupd", value: t.data.fwurl, size: 31, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\/\:]+$/i })),
+                            m("span.leftlab", "FW upd URL: "),  
+                            m(textInput, {id: "fwupd", value: t.data.fwurl, size: 30, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\/\:]+$/i })),
                         m("div.field", {className: "key"},
                             m("span.leftlab", "API Key: "),  
-                            m(textInput, {id: "apikey", value: t.data.apikey, size: 31, maxLength:128,  onchange: dirty, regex: /^.*$/i })), 
+                            m(textInput, {id: "apikey", value: t.data.apikey, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i })), 
                         
                         m("div.butt", 
                             m("img.upd", {src: (t.dirty ? "img/warn.png" : "img/ok.png")}),
                             m("button", { type: "button", onclick: update}, "Update"),
                             m("button", { type: "button", onclick: reset }, "Reset"),
-                            m("span.errmsg", t.errmsg)
                         )
                       
                     ])
