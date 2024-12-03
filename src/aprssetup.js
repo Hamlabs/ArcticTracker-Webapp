@@ -62,11 +62,10 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                     m("div.field", 
                             m("span.leftlab", "Frequency: "),  
                             m(textInput, {id:"freq", value: t.data.freq, size: 9, maxLength:9, 
-                                onchange: dirty, regex: /^[0-9]{9}$/i })),
+                                onchange: dirty, regex: /^[0-9]{9}$/i })),     
                     m("div.field", 
-                            m("span.leftlab", "TX power level: "),  
-                            m(textInput, {id:"lora_cr", value: t.data.txpower, size: 2, maxLength:2, 
-                                onchange: dirty, regex: /^[0-6]$/i })),   
+                            m("span.leftlab", "TX power level:"),
+                            m(powerSelect) ),
                     m("div.field", 
                             m("span.leftlab", "Spread factor: "),  
                             m(textInput, {id:"lora_sf", value: t.data.lora_sf, size: 2, maxLength:2, 
@@ -94,12 +93,35 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                             {label: "Car (van)", val: '/v'},
                             {label: "House", val: '/-'}, 
                             {label: "Red Cross", val: '/+'},
+                            {label: "APRS igate", val: '/&'},
+                            {label: "LoRa igate", val: 'L&'},
+                            {label: "Fill-in digi", val: '1#'},
                         ]
                     })
                 ])
             }
         }
         
+        const powerSelect = {
+            view: function() {
+                
+                return m("span.poselect", [
+                    m(select, {
+                        id: "poSelect", 
+                        onchange: onPoSelect, 
+                        list: [
+                            {label: "0: 4 mW", val: 0},
+                            {label: "1: 20 mW", val: 1},
+                            {label: "2: 80 mW", val: 2},
+                            {label: "3: 250 mW", val: 3}, 
+                            {label: "4: 0.5 W", val: 4},
+                            {label: "5: 0.7 W", val: 5},
+                            {label: "5: 0.9 W", val: 6},
+                        ]
+                    })
+                ])
+            }
+        }
         
         this.widget = {
             view: function() {
@@ -175,12 +197,18 @@ pol.core.aprsSetup = class extends pol.core.Widget {
         /* Handler for when user selects symbol */
         function onSymSelect () {
             const sym = $('#symSelect').val();
-            console.log("SYM: ", sym);
             t.symtab(sym[0]); 
             t.sym(sym[1]);
             dirty();
             m.redraw();
         }
+        
+        function onPoSelect() { 
+            const po = $('#poSelect').val();
+            t.data.txpower(po);
+            dirty();
+        }
+        
         
         function dirty() {
             t.dirty = true;
@@ -208,7 +236,7 @@ pol.core.aprsSetup = class extends pol.core.Widget {
             var obj = Object.assign({}, t.data); 
             toNumber(obj, "maxpause"); toNumber(obj, "minpause"); 
             toNumber(obj, "mindist"); toNumber(obj, "repeat"); toNumber(obj, "turnlimit");
-            toNumber(obj, "freq");
+            toNumber(obj, "freq"); toNumber(obj, "txpower");
             obj.freq *= 1000;
             t.keys.getSelectedSrv().PUT( "api/aprs", JSON.stringify(obj),
                 ()=> {  
@@ -235,12 +263,14 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                 this.data.symbol = m.stream(""+st.symbol);
                 this.symtab(st.symbol()[0]);
                 this.sym(st.symbol()[1]);
+                $('#symSelect').val(st.symbol());
                 this.data.comment = m.stream(st.comment);
                 this.data.path = m.stream(st.path);
                 this.data.txfreq = m.stream(st.txfreq);
                 this.data.rxfreq = m.stream(st.rxfreq);
                 this.data.freq = m.stream(st.freq/1000);     
                 this.data.txpower = m.stream(st.txpower);
+                $('#poSelect').val(st.txpower());
                 this.data.lora_sf = m.stream(st.lora_sf);
                 this.data.lora_cr = m.stream(st.lora_cr);
                 

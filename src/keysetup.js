@@ -231,6 +231,7 @@ pol.core.keySetup = class extends pol.core.Widget {
      * Select next tracker in list. 
      */
     selectNext() {
+        console.log("selectNext");
         if (this.myTrackers.length <= 1)
             return;
         let i = this.selected;
@@ -238,6 +239,7 @@ pol.core.keySetup = class extends pol.core.Widget {
         do {
             i = (i+1) % this.myTrackers.length;
         } while (this.isAvailable(i)==false && i != orig);
+        console.log("selectNext selects: "+i);
         this.select(i);
     }
     
@@ -349,7 +351,7 @@ pol.core.keySetup = class extends pol.core.Widget {
         {return this.auth && this.getSelected().access}
         
     isAvailable(i)
-        {return this.myTrackers.access;}
+        {return this.myTrackers[i] != null && this.myTrackers[i].access;}
         
     /* 
      * Set if we are authorised for access to the selected tracker.
