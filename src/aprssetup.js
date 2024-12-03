@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2022-2023 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
+ Copyright (C) 2022-2024 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published 
@@ -29,11 +29,76 @@ pol.core.aprsSetup = class extends pol.core.Widget {
         t.classname = "core.aprsSetup"; 
         t.data = {
             mycall:m.stream(""), symbol:m.stream(""), path:m.stream(""), comment:m.stream(""), 
-            txfreq:m.stream(""), rxfreq:m.stream(""),
+            txfreq:m.stream(""), rxfreq:m.stream(""), freq:m.stream(""),txpower:m.stream(""), lora_sf:m.stream(""),lora_cr:m.stream(""),
             maxpause:m.stream(""), minpause:m.stream(""), mindist:m.stream(""), repeat:m.stream(""), turnlimit:m.stream(""),
             timestamp:false, compress:false, altitude:false, extraturn:false };
         t.dirty = false;    
         t.keys = pol.widget.get("core.keySetup");
+        t.lora = true; 
+        t.sym = m.stream("]");
+        t.symtab = m.stream("/");
+        
+        
+        
+        const radio = { 
+            view: function() {
+                return m("span", [
+                    m("div.field", 
+                            m("span.leftlab", "TX frequency: "),  
+                            m(textInput, {id:"txfreq", value: t.data.txfreq, size: 7, maxLength:7, 
+                                onchange: dirty, regex: /^[0-9]{7}$/i })),
+                    m("div.field", 
+                            m("span.leftlab", "RX frequency: "),  
+                            m(textInput, {id:"rxfreq", value: t.data.rxfreq, size: 7, maxLength:7, 
+                                onchange: dirty, regex: /^[0-9]{7}$/i }))
+                ])
+            }
+        };
+        
+
+        const lora_radio = { 
+            view: function() {
+                return m("span", [
+                    m("div.field", 
+                            m("span.leftlab", "Frequency: "),  
+                            m(textInput, {id:"freq", value: t.data.freq, size: 9, maxLength:9, 
+                                onchange: dirty, regex: /^[0-9]{9}$/i })),
+                    m("div.field", 
+                            m("span.leftlab", "TX power level: "),  
+                            m(textInput, {id:"lora_cr", value: t.data.txpower, size: 2, maxLength:2, 
+                                onchange: dirty, regex: /^[0-6]$/i })),   
+                    m("div.field", 
+                            m("span.leftlab", "Spread factor: "),  
+                            m(textInput, {id:"lora_sf", value: t.data.lora_sf, size: 2, maxLength:2, 
+                                onchange: dirty, regex: /^7|8|9|10|11|12$/i })),
+                    m("div.field", 
+                            m("span.leftlab", "Coding rate: "),  
+                            m(textInput, {id:"lora_cr", value: t.data.lora_cr, size: 2, maxLength:2, 
+                                onchange: dirty, regex: /^[5-8]$/i }))
+                ])
+            }
+        };
+        
+        const symSelect = {
+            view: function() {
+                
+                return m("span.symselect", [
+                    m(textInput, {id:"symtab", size: 1, maxLength:1, value: t.symtab, regex: /[\/\\a-zA-Z]/i }),
+                    m(textInput, {id:"symbol", size: 1, maxLength:1, value: t.sym, regex: /[a-zA-Z]/i }),
+                    m(select, {
+                        id: "symSelect", 
+                        onchange: onSymSelect, 
+                        list: [
+                            {label: "Person (moving)", val: '/['},
+                            {label: "Car", val: '/>'},
+                            {label: "Car (van)", val: '/v'},
+                            {label: "House", val: '/-'}, 
+                            {label: "Red Cross", val: '/+'},
+                        ]
+                    })
+                ])
+            }
+        }
         
         
         this.widget = {
@@ -47,10 +112,11 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                             m("span.leftlab", "My callsign: "),  
                             m(textInput, {id:"callsign", value: t.data.mycall, size: 10, maxLength:15, 
                                 onchange: dirty, regex: /^[a-zA-Z0-9\-]+$/i })),
+                                            
                         m("div.field", 
-                            m("span.leftlab", "Symbol (tab/sym): "),  
-                            m(textInput, {id:"symbol", value: t.data.symbol, size: 2, maxLength:2, 
-                                onchange: dirty, regex: /^..$/i })),
+                            m("span.leftlab", "Symbol:"),
+                            m(symSelect) ),
+
                         m("div.field", 
                             m("span.leftlab", "Report comment: "),  
                             m(textInput, {id:"comment", value: t.data.comment, size: 24, maxLength:40, 
@@ -59,14 +125,8 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                             m("span.leftlab", "Digipeater path: "),  
                             m(textInput, {id:"path", value: t.data.path, size: 24, maxLength:40, 
                                 onchange: dirty, regex: /^([a-zA-Z0-9\-]+)(,([a-zA-Z0-9\-]+))*$/i })),
-                        m("div.field", 
-                            m("span.leftlab", "TX frequency: "),  
-                            m(textInput, {id:"txfreq", value: t.data.txfreq, size: 7, maxLength:7, 
-                                onchange: dirty, regex: /^[0-9]{7}$/i })),
-                        m("div.field", 
-                            m("span.leftlab", "RX frequency: "),  
-                            m(textInput, {id:"rxfreq", value: t.data.rxfreq, size: 7, maxLength:7, 
-                                onchange: dirty, regex: /^[0-9]{7}$/i })), br,
+                      
+                        m("span", (t.lora ? m(lora_radio) : m(radio))), br,
                       
                         m("div.field",                                    
                             m("span.leftlab", {class: "subsect"}, "Track settings: "), m("span.check", [
@@ -111,7 +171,16 @@ pol.core.aprsSetup = class extends pol.core.Widget {
             }
         };
             
-
+    
+        /* Handler for when user selects symbol */
+        function onSymSelect () {
+            const sym = $('#symSelect').val();
+            console.log("SYM: ", sym);
+            t.symtab(sym[0]); 
+            t.sym(sym[1]);
+            dirty();
+            m.redraw();
+        }
         
         function dirty() {
             t.dirty = true;
@@ -135,10 +204,12 @@ pol.core.aprsSetup = class extends pol.core.Widget {
 
             
         function update() {
+            t.data.symbol(t.symtab() + t.sym());
             var obj = Object.assign({}, t.data); 
             toNumber(obj, "maxpause"); toNumber(obj, "minpause"); 
             toNumber(obj, "mindist"); toNumber(obj, "repeat"); toNumber(obj, "turnlimit");
-
+            toNumber(obj, "freq");
+            obj.freq *= 1000;
             t.keys.getSelectedSrv().PUT( "api/aprs", JSON.stringify(obj),
                 ()=> {  
                     t.dirty = false; 
@@ -156,14 +227,22 @@ pol.core.aprsSetup = class extends pol.core.Widget {
     getInfo() {
          this.keys.getSelectedSrv().GET( "api/aprs", null, 
             st => {
+                this.lora = !st.txfreq;
+
               //  const st = JSON.parse(x);
                 this.data = st;
                 this.data.mycall = m.stream(st.mycall);
                 this.data.symbol = m.stream(""+st.symbol);
+                this.symtab(st.symbol()[0]);
+                this.sym(st.symbol()[1]);
                 this.data.comment = m.stream(st.comment);
                 this.data.path = m.stream(st.path);
-                this.data.txfreq = m.stream(st.rxfreq);
+                this.data.txfreq = m.stream(st.txfreq);
                 this.data.rxfreq = m.stream(st.rxfreq);
+                this.data.freq = m.stream(st.freq/1000);     
+                this.data.txpower = m.stream(st.txpower);
+                this.data.lora_sf = m.stream(st.lora_sf);
+                this.data.lora_cr = m.stream(st.lora_cr);
                 
                 this.data.turnlimit = m.stream(st.turnlimit);
                 this.data.maxpause = m.stream(st.maxpause);
@@ -172,6 +251,7 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                 this.data.repeat = m.stream(st.repeat); 
                 this.dirty = false;
                 this.clearerr();
+                m.redraw();
             }, 
             x=> { 
                 this.error("Cannot GET data (se browser log)", x);
@@ -183,7 +263,7 @@ pol.core.aprsSetup = class extends pol.core.Widget {
     onActivate() {
         this.getInfo();
     }
-    
+
     
 } /* class */
 

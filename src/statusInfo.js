@@ -28,7 +28,7 @@ pol.core.statusInfo = class extends pol.core.Widget {
         super();
         const t = this;
         t.classname = "core.statusInfo"; 
-        t.data = {heap:0, flash:0, ap:"-", ipaddr:"-", macaddr: "-",  mdns: "-", vbatt: "-"}; 
+        t.data = {heap:0, flash:0, ap:"-", ipaddr:"-", macaddr: "-",  mdns: "-", vbatt: "-", device: "-", version: "-"}; 
         t.keys = pol.widget.get("core.keySetup");
         
         this.widget = {
@@ -37,6 +37,10 @@ pol.core.statusInfo = class extends pol.core.Widget {
                     m("h1", "Status Info"),
                     (t.errmsg != null ? m("div#errmsg", t.errmsg) : null),
                     m("form.status", [  
+                        m("div.field", 
+                            m("span.leftlab", "Device: "), t.data.device),
+                        m("div.field", 
+                            m("span.leftlab", "Firmware version: "), t.data.version),
                         m("div.field", 
                             m("span.leftlab", "Free heap: "), toKbytes(t.data.heap)), 
                         m("div.field", 

@@ -49,3 +49,8 @@ span.active   {background: #fe9;}
 span.allowed  {background: #dfd;}
 span.denied   {background: #fadaca; color: #200 }
 span.unknown  {background: #ccc}
+
+
+span.symselect {white-space: nowrap; background: red; display: contents}
+#symSelect {max-width: 10em}
+input#symtab, input#symbol {width: 1em}
