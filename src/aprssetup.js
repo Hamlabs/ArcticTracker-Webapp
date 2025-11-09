@@ -237,6 +237,7 @@ pol.core.aprsSetup = class extends pol.core.Widget {
             toNumber(obj, "maxpause"); toNumber(obj, "minpause"); 
             toNumber(obj, "mindist"); toNumber(obj, "repeat"); toNumber(obj, "turnlimit");
             toNumber(obj, "freq"); toNumber(obj, "txpower");
+            toNumber(obj, "lora_sf"); toNumber(obj, "lora_cr");
             obj.freq *= 1000;
             t.keys.getSelectedSrv().PUT( "api/aprs", JSON.stringify(obj),
                 ()=> {  
