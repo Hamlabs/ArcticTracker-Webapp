@@ -46,7 +46,8 @@ pol.security.hmac_getKey = async function(secret) {
         "raw",
         enc.encode(secret),
         algorithm,
-        false, ["sign", "verify"]
+        false,
+        ["sign", "verify"]
     );
     return _key;
 }

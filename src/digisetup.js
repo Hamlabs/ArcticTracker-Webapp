@@ -127,7 +127,7 @@ pol.core.digiSetup = class extends pol.core.Widget {
                 this.data.server = m.stream(st.server);
                 this.data.port = m.stream(""+st.port);
                 this.data.user = m.stream(st.user);
-                this.data.passcode = m.stream(st.passcode);
+                this.data.passcode = m.stream(""+st.passcode);
                 this.dirty = false;         
                 this.clearerr();
             },

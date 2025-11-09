@@ -262,16 +262,16 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                 this.data = st;
                 this.data.mycall = m.stream(st.mycall);
                 this.data.symbol = m.stream(""+st.symbol);
-                this.symtab(st.symbol()[0]);
-                this.sym(st.symbol()[1]);
-                $('#symSelect').val(st.symbol());
+                this.symtab(st.symbol[0]);
+                this.sym(st.symbol[1]);
+                $('#symSelect').val(st.symbol);
                 this.data.comment = m.stream(st.comment);
                 this.data.path = m.stream(st.path);
                 this.data.txfreq = m.stream(st.txfreq);
                 this.data.rxfreq = m.stream(st.rxfreq);
                 this.data.freq = m.stream(st.freq/1000);     
                 this.data.txpower = m.stream(st.txpower);
-                $('#poSelect').val(st.txpower());
+                $('#poSelect').val(st.txpower);
                 this.data.lora_sf = m.stream(st.lora_sf);
                 this.data.lora_cr = m.stream(st.lora_cr);
                 
