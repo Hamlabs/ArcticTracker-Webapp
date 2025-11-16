@@ -2,7 +2,7 @@
  Misc. common functions and mithril modules for UI via DOM. 
  Lite version of the one found in Polaric Server webapp2.
  
- Copyright (C) 2022-2024 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
+ Copyright (C) 2025 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published 
@@ -21,9 +21,9 @@
 
 
 /* Some simple DOM elements */
-const br = m("br");
-const hr = m("hr");
-const nbsp = m.trust("&nbsp;");
+window.br = m("br");
+window.hr = m("hr");
+window.nbsp = m.trust("&nbsp;");
 
 
 
@@ -74,7 +74,7 @@ const textInput = {
    }
 }
 
-
+window.textInput = textInput; // FIXME
 
 
 /**
@@ -94,6 +94,8 @@ const checkBox = {
     }
 }
 
+window.checkBox = checkBox; // FIXME
+
 
 
 /**
@@ -110,6 +112,7 @@ const select = {
     }
 }
 
+window.select = select; // FIXME; 
 
 
 /*
@@ -161,97 +164,8 @@ const iconPick = {
     
 }
 
+window.iconPick = iconPick; // FIXME
 
-const Datepick = {
-    oncreate: function(vn) {
-        const input = document.createElement( 'input' );
-        input.readOnly = true; 
-        input.id=vn.attrs.id;
-        input.value = vn.attrs.value; 
-        vn.dom.appendChild( input );
-        new Pikaday( {
-            field: input,
-            format: "YYYY-MM-DD"
-        });
-	},
-    
-    onchange: function(vn) {
-        vn.attrs.value = input.value; 
-    },
-    
-    view: function(vn) {
-        return m("span.datepick")
-  }
-}
-
-
-
-/*
- * Value attributes: 
- *     dvalue - date value (stream)
- *     tvalue - time (stream) 
- */
-const dateTimeInput = {
-    view: function(vn) {
-        return m("span", 
-            m(Datepick, {value: vn.attrs.dvalue, id:vn.attrs.id+"_date"}),
-            m(textInput, {id:vn.attrs.id+"_time", size: "5", maxLength: "5", 
-                value: vn.attrs.tvalue, regex: /^(([0-1][0-9])|(2[0-3]))\:[0-5][0-9]$/ }));
-    }
-}
-
-
-
- 
-const removeEdit = {
-    view: vn => {
-        return m("span.removeEdit", [ 
-            m("img", {src:"images/edit-delete.png",
-                onclick: vn.attrs.remove }), 
-            m("img", {src:"images/edit.png",
-                onclick: vn.attrs.edit }),
-        ]);    
-    }
-}
- 
- 
- 
- 
- 
- 
-/**
- * Use an element as a drag-drop zone for files.
- */
-
-function dragdrop(element, onchange) {
-	
-	element.addEventListener("dragover", activate)
-	element.addEventListener("dragleave", deactivate)
-	element.addEventListener("dragend", deactivate)
-	element.addEventListener("drop", deactivate)
-	element.addEventListener("drop", update)
-	window.addEventListener("blur", deactivate)
-
-	function activate(e) {
-		e.preventDefault();
-        $(element).addClass("dragover");
-	}
-
-	function deactivate() {
-        $(element).removeClass("dragover");
-    }
-	
-	
-    /* This is called when item is dropped on the element 
-     * options.onchange is called using the dropped items as argument.. 
-     */
-	function update(e) {
-		e.preventDefault()
-		if (typeof onchange == "function") {
-			onchange((e.dataTransfer || e.target))
-		}
-	}
-}
 
 
    

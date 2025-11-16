@@ -7,9 +7,10 @@
     "lib": "lib"
   },
   "scripts": {
-    "build": "webpack",
-    "build:css": "cd style && cat widget.css style.css mobil.css | npx cleancss -o style-min.css && cd ..",
-    "build:all": "npm run build && npm run build:css",
+    "build": "webpack --mode production && npm run build:css",
+    "build:css": "cd style && cat widget.css style.css mobil.css | npx clean-css-cli -o style-min.css && cd ..",
+    "dev": "webpack --mode development",
+    "watch": "webpack --mode development --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
