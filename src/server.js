@@ -154,19 +154,14 @@ pol.core.Server = class {
         console.log("SERVER SET ID: ", id, ipaddr, this.useip);
         this.id=id;
         
-        /* If IP address is provided, always update the URL (allows for IP address changes) */
+        if (this.useip)
+            return;
         if (ipaddr != null) {
             this.setUrl("https://" +ipaddr+ "/");
             this.useip = true;
-            return;
         }
-        
-        /* Don't update URL if already using IP and no new IP provided */
-        if (this.useip)
-            return;
-            
         /* If argument is a a url */
-        if (/http(s)?:\/\//.test(id))
+        else if (/http(s)?:\/\//.test(id))
             this.setUrl(id);
         
         /* If it is a callsign */

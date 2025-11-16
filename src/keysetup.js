@@ -274,7 +274,9 @@ pol.core.keySetup = class extends pol.core.Widget {
             if (ipaddr != null && this.myTrackers[existingIndex].ipaddr !== ipaddr) {
                 console.log("KEYSETUP UPDATE TRACKER IP: ", id, ipaddr);
                 this.myTrackers[existingIndex].ipaddr = ipaddr;
-                this.myServers[existingIndex].setId(id, ipaddr);
+                /* Directly update the server URL to handle IP address changes */
+                this.myServers[existingIndex].setUrl("https://" + ipaddr + "/");
+                this.myServers[existingIndex].useip = true;
                 CONFIG.datastore.setItem("arctic.mytrackers", this.myTrackers);
                 this.pingTracker(existingIndex);
                 m.redraw();
