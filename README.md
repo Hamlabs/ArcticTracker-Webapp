@@ -23,21 +23,11 @@ If there is sufficient interest, I can make the smartphone app available (Androi
 ### Building the project
 This project uses Webpack for building and bundling JavaScript files. To build the project:
 
-1. Install dependencies:
+Use npm scripts:
 ```bash
-npm install
-```
-
-2. Build JavaScript and CSS:
-```bash
-./compile-js.sh
-```
-
-Or use npm scripts:
-```bash
-npm run build        # Build JavaScript only
+npm run build        # Build JavaScript and CSS (production mode)
 npm run build:css    # Build CSS only
-npm run build:all    # Build both JavaScript and CSS
+npm run dev          # Build Javascript with map (development mode)
 ```
 
 The build process will:
