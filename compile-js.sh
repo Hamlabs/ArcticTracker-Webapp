@@ -1,18 +1,14 @@
 #!/bin/bash
 
-BABEL="babeljs --minified --compact=true --no-comments"
-
 #
-# combine and minify using the babel compiler
+# Build JavaScript using Webpack
 #
-
-D=src
-$BABEL $D/secUtils.js $D/widget.js $D/server.js $D/uiSupport.js $D/keysetup.js $D/statusInfo.js $D/wifisetup.js $D/aprssetup.js $D/digisetup.js $D/trklogsetup.js > arcticsetup-min.js
+npm run build
 
 #
 # combine and minify css
 #
 cd style
-cat widget.css style.css mobil.css | cleancss -o style-min.css
+cat widget.css style.css mobil.css | npx cleancss -o style-min.css
 
 cd ..

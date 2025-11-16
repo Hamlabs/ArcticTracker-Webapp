@@ -18,7 +18,7 @@
  along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 /** @namespace */
-var pol = pol || {};
+var pol = window.pol = window.pol || {};
 pol.core = pol.core || {};
 pol.ui = pol.ui || {};
 

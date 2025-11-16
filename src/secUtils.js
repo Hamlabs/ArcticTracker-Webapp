@@ -17,7 +17,7 @@
 */
 
 /** @namespace */
-var pol = pol || {};
+var pol = window.pol = window.pol || {};
 pol.security = pol.security || {};
 
 
