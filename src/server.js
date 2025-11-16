@@ -16,10 +16,10 @@
 */
 
 /** @namespace */
-var pol = pol || {};
+var pol = window.pol = window.pol || {};
 pol.core = pol.core || {};
 
-let CONFIG = {
+let CONFIG = window.CONFIG = {
     datastore: null
 }
 
