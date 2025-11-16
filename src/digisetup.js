@@ -28,7 +28,8 @@ pol.core.digiSetup = class extends pol.core.Widget {
         super();
         const t = this;
         t.classname = "core.digiSetup"; 
-        t.data = {digiOn:false, wide1:false, sar:false, igateOn:false, server: m.stream(""),  port: m.stream(""), user: m.stream(""), passcode: m.stream("")}; 
+        t.data = {digiOn:false, wide1:false, sar:false, igateOn:false, server: m.stream(""),  
+            port: m.stream(""), user: m.stream(""), passcode: m.stream(""), filter: m.stream("")}; 
         t.dirty = false;   
         t.keys = pol.widget.get("core.keySetup");
                 
@@ -66,7 +67,10 @@ pol.core.digiSetup = class extends pol.core.Widget {
                             m("span.leftlab", "Passcode: "),  
                             m(textInput, {id:"passcode", value: t.data.passcode, size: 5, maxLength:5, onchange: dirty,
                                 regex: /^[0-9\-]+$/i })), 
-                      
+                        m("div.field", 
+                            m("span.leftlab", "Filter: "),  
+                            m(textInput, {id:"filter", value: t.data.filter, size: 10, maxLength:30, onchange: dirty,
+                                regex: /^.*$/i })),
                       
                         m("div.butt", 
                             m("img.upd", {src: (t.dirty ? "img/warn.png" : "img/ok.png")}),
@@ -128,6 +132,7 @@ pol.core.digiSetup = class extends pol.core.Widget {
                 this.data.port = m.stream(""+st.port);
                 this.data.user = m.stream(st.user);
                 this.data.passcode = m.stream(st.passcode);
+                this.data.filter = m.stream(st.filter);
                 this.dirty = false;         
                 this.clearerr();
             },
