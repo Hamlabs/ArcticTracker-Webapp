@@ -266,7 +266,19 @@ pol.core.keySetup = class extends pol.core.Widget {
     addTracker(id, ipaddr) {
         console.log("KEYSETUP ADD TRACKER: ", id, ipaddr);
         id = id.toUpperCase();
-        if (this.exists(id)) {
+        
+        /* Check if tracker already exists */
+        const existingIndex = this.findTrackerIndex(id);
+        if (existingIndex !== -1) {
+            /* If tracker exists and IP address is provided, update it */
+            if (ipaddr != null && this.myTrackers[existingIndex].ipaddr !== ipaddr) {
+                console.log("KEYSETUP UPDATE TRACKER IP: ", id, ipaddr);
+                this.myTrackers[existingIndex].ipaddr = ipaddr;
+                this.myServers[existingIndex].setId(id, ipaddr);
+                CONFIG.datastore.setItem("arctic.mytrackers", this.myTrackers);
+                this.pingTracker(existingIndex);
+                m.redraw();
+            }
             return false;
         }
         
@@ -338,6 +350,18 @@ pol.core.keySetup = class extends pol.core.Widget {
             if (x.id == tr)
                 return true;
         return false;
+    }
+    
+    
+    /*
+     * Find the index of a tracker by its id. Returns -1 if not found.
+     */
+    findTrackerIndex(id) {
+        for (let i = 0; i < this.myTrackers.length; i++) {
+            if (this.myTrackers[i].id === id)
+                return i;
+        }
+        return -1;
     }
         
   
@@ -434,8 +458,20 @@ pol.core.keySetup = class extends pol.core.Widget {
                 for (const tt of tr) {
                     const id = tt.host.split(/[Aa]rctic-/);
                     if (id[1]) {
-                        if (t.addTracker(id[1]))
-                            console.log("MDNS TRACKER: ", tt.name, tt.host, tt.port);
+                        /* Extract IP address from mDNS response (may be in address, addresses, or addr field) */
+                        let ipaddr = null;
+                        if (tt.address) {
+                            ipaddr = tt.address;
+                        } else if (tt.addresses && tt.addresses.length > 0) {
+                            /* Use first IPv4 address if available, otherwise use first address */
+                            const ipv4 = tt.addresses.find(a => /^\d+\.\d+\.\d+\.\d+$/.test(a));
+                            ipaddr = ipv4 || tt.addresses[0];
+                        } else if (tt.addr) {
+                            ipaddr = tt.addr;
+                        }
+                        
+                        const added = t.addTracker(id[1], ipaddr);
+                        console.log("MDNS TRACKER: ", tt.name, tt.host, tt.port, "IP:", ipaddr, "Added:", added);
                     }
                 }
             },            
