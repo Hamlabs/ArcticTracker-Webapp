@@ -47,10 +47,9 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].css'
     }),
-    // Copy library files (they are already minified)
+    // Copy image files only
     new CopyPlugin({
       patterns: [
-        { from: 'lib', to: 'lib' },
         { from: 'img', to: 'img' }
       ]
     })

@@ -18,3 +18,41 @@ To install your own version you copy the webapp to a location where it can be re
 
 If there is sufficient interest, I can make the smartphone app available (Android). 
 
+## Building
+
+The webapp now uses webpack for building and bundling the JavaScript and CSS files. 
+
+### Prerequisites
+- Node.js and npm installed on your system
+
+### Build Process
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Build for production:
+```bash
+npm run build
+```
+
+This will:
+- Bundle all JavaScript files from `src/` into `arcticsetup-min.js`
+- Combine and minify all CSS files from `style/` into `style/style-min.css`
+- Minify and optimize all assets
+
+3. For development builds (with source maps):
+```bash
+npm run build:dev
+```
+
+4. Watch mode for continuous development:
+```bash
+npm run watch
+```
+
+### Legacy Build Script
+
+The original `compile-js.sh` bash script is still available for reference but has been replaced by the webpack build system.
+
