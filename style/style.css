@@ -52,5 +52,5 @@ span.unknown  {background: #ccc}
 
 span.symselect {white-space: nowrap; background: red; display: contents}
 #symSelect {max-width: 10em}
-#poSelect {max-width: 7em}
+#poSelect {max-width: 8.3em; margin-bottom: 0.3em}
 input#symtab, input#symbol {width: 1em}

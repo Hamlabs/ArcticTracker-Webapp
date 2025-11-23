@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2022-2024 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
+ Copyright (C) 2025 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published 
@@ -29,7 +29,8 @@ pol.core.aprsSetup = class extends pol.core.Widget {
         t.classname = "core.aprsSetup"; 
         t.data = {
             mycall:m.stream(""), symbol:m.stream(""), path:m.stream(""), comment:m.stream(""), 
-            txfreq:m.stream(""), rxfreq:m.stream(""), freq:m.stream(""),txpower:m.stream(""), lora_sf:m.stream(""),lora_cr:m.stream(""),
+            txfreq:m.stream(""), rxfreq:m.stream(""), freq:m.stream(""),txpower:m.stream(""), 
+            lora_sf:m.stream(""),lora_cr:m.stream(""),lora_alt_sf:m.stream(""),lora_alt_cr:m.stream(""),
             maxpause:m.stream(""), minpause:m.stream(""), mindist:m.stream(""), repeat:m.stream(""), turnlimit:m.stream(""),
             timestamp:false, compress:false, altitude:false, extraturn:false };
         t.dirty = false;    
@@ -69,11 +70,17 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                     m("div.field", 
                             m("span.leftlab", "Spread factor: "),  
                             m(textInput, {id:"lora_sf", value: t.data.lora_sf, size: 2, maxLength:2, 
+                                onchange: dirty, regex: /^7|8|9|10|11|12$/i }), 
+                            m("span.xxsleftlab", " Alt:"),
+                            m(textInput, {id:"lora_alt_sf", value: t.data.lora_alt_sf, size: 2, maxLength:2, 
                                 onchange: dirty, regex: /^7|8|9|10|11|12$/i })),
                     m("div.field", 
                             m("span.leftlab", "Coding rate: "),  
                             m(textInput, {id:"lora_cr", value: t.data.lora_cr, size: 2, maxLength:2, 
-                                onchange: dirty, regex: /^[5-8]$/i }))
+                                onchange: dirty, regex: /^[5-8]$/i }),
+                            m("span.xxsleftlab", " Alt:"),
+                            m(textInput, {id:"lora_alt_cr", value: t.data.lora_alt_cr, size: 2, maxLength:2, 
+                                onchange: dirty, regex: /^7|8|9|10|11|12$/i })),
                 ])
             }
         };
@@ -238,6 +245,7 @@ pol.core.aprsSetup = class extends pol.core.Widget {
             toNumber(obj, "mindist"); toNumber(obj, "repeat"); toNumber(obj, "turnlimit");
             toNumber(obj, "freq"); toNumber(obj, "txpower");
             toNumber(obj, "lora_sf"); toNumber(obj, "lora_cr");
+            toNumber(obj, "lora_alt_sf"); toNumber(obj, "lora_alt_cr");
             obj.freq *= 1000;
             t.keys.getSelectedSrv().PUT( "api/aprs", JSON.stringify(obj),
                 ()=> {  
@@ -274,6 +282,8 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                 $('#poSelect').val(st.txpower());
                 this.data.lora_sf = m.stream(st.lora_sf);
                 this.data.lora_cr = m.stream(st.lora_cr);
+                this.data.lora_alt_sf = m.stream(st.lora_alt_sf);
+                this.data.lora_alt_cr = m.stream(st.lora_alt_cr);
                 
                 this.data.turnlimit = m.stream(st.turnlimit);
                 this.data.maxpause = m.stream(st.maxpause);

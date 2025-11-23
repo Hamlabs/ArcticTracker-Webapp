@@ -57,7 +57,6 @@ pol.core.Server = class {
         const t = this;
         t.id = "NOCALL";
         t.url = "";
-        t.useip = false; 
         t.setId(id, ipaddr);
         t.key = null;
         
@@ -100,8 +99,8 @@ pol.core.Server = class {
             data: data, 
             success: success,
             error: error,  
-            contentType: false,
-            processData: (type!="POST"),
+            contentType: "application/json",
+            processData: (type!="POST" && type != "PUT"),
             crossDomain: true,
             xhrFields: { withCredentials: true }, 
             headers: headers
@@ -151,15 +150,12 @@ pol.core.Server = class {
     
     
     setId(id, ipaddr) {
-        console.log("SERVER SET ID: ", id, ipaddr, this.useip);
+        console.log("SERVER SET ID: ", id, ipaddr);
         this.id=id;
         
-        if (this.useip)
-            return;
-        if (ipaddr != null) {
+        if (ipaddr != null) 
             this.setUrl("https://" +ipaddr+ "/");
-            this.useip = true;
-        }
+    
         /* If argument is a a url */
         else if (/http(s)?:\/\//.test(id))
             this.setUrl(id);

@@ -98,6 +98,7 @@ pol.core.keySetup = class extends pol.core.Widget {
                 console.log("myTrackers/myServers", t.myTrackers,t.myServers); 
              });
             
+            
         CONFIG.datastore.getItem("arctic.selected")
             .then( x => {
                 if (x < 0)
@@ -106,10 +107,11 @@ pol.core.keySetup = class extends pol.core.Widget {
                 m.redraw();
             });
             
+            
         setTimeout(scanTrackers,   2000);
-        setInterval(scanTrackers, 25000);
-        setTimeout( scanMdns,      6000);
-        setInterval(scanMdns,     25000);
+        setInterval(scanTrackers, 15000);
+        setTimeout( scanMdns,      4000);
+        setInterval(scanMdns,     20000);
         
         
         function _select(i) {
@@ -216,6 +218,8 @@ pol.core.keySetup = class extends pol.core.Widget {
         if (i==null || i<0)
             return;
         const tr = this.myTrackers[i];
+        this.auth = tr.access;
+        
         if (! tr.server || tr.server==null) 
             tr.server = new pol.core.Server(tr.id);
         
@@ -264,41 +268,44 @@ pol.core.keySetup = class extends pol.core.Widget {
      * Add tracker to the list 
      */    
     addTracker(id, ipaddr) {
-        console.log("KEYSETUP ADD TRACKER: ", id, ipaddr);
         id = id.toUpperCase();
+        let index = -1;
         
         /* Check if tracker already exists */
         const existingIndex = this.findTrackerIndex(id);
         if (existingIndex !== -1) {
             /* If tracker exists and IP address is provided, update it */
             if (ipaddr != null && this.myTrackers[existingIndex].ipaddr !== ipaddr) {
-                console.log("KEYSETUP UPDATE TRACKER IP: ", id, ipaddr);
+                console.log("addTracker: Tracker exists. UPDATING: "+ipaddr);
                 this.myTrackers[existingIndex].ipaddr = ipaddr;
-                /* Directly update the server URL to handle IP address changes */
-                this.myServers[existingIndex].setUrl("https://" + ipaddr + "/");
-                this.myServers[existingIndex].useip = true;
                 CONFIG.datastore.setItem("arctic.mytrackers", this.myTrackers);
+                                
+                /* Directly update the server URL to handle IP address changes */
+                this.myServers[existingIndex].setId(id, ipaddr);
                 this.pingTracker(existingIndex);
                 m.redraw();
             }
-            return false;
+            index = existingIndex;
         }
+        else 
+        {
+            /* Add tracker to list of trackers-ids and to list of servers */
+            const i = this.myTrackers.push( { id:id, ipaddr: ipaddr, access:false, denied:false} ) - 1; 
+            const j = this.myServers.push( new pol.core.Server(id, ipaddr) ) -1;
+            if (i != j)
+                console.error("Tracker-list doesn't correspond to server-list", i,j);
         
-        /* Add tracker to list of trackers-ids and to list of servers */
-        const i = this.myTrackers.push( { id:id, ipaddr: ipaddr, access:false, denied:false} ) - 1; 
-        const j = this.myServers.push( new pol.core.Server(id, ipaddr) ) -1;
-        if (i != j)
-            console.error("Tracker-list doesn't correspond to server-list", i,j);
-        
-        this.selected = i;
-        if (this.key() != "")
-            this.setKey(this.key());
-        
-        this.dirty = false;
-        CONFIG.datastore.setItem("arctic.mytrackers", this.myTrackers);
-        m.redraw();
-        console.log("Added tracker: "+id+ " trying to ping it.", i);
-        this.pingTracker(i);            
+            this.selected = i;
+            if (this.key() != "")
+                this.setKey(this.key());
+            
+            this.dirty = false;
+            CONFIG.datastore.setItem("arctic.mytrackers", this.myTrackers);
+            m.redraw();
+            index = i;
+        }
+        console.log("Added/updated tracker: "+id+ " trying to ping it.", index);
+        this.pingTracker(index);            
         return true;
     }
     
@@ -341,6 +348,8 @@ pol.core.keySetup = class extends pol.core.Widget {
         this.dirty = false;
         if (t.myServers[i].key != null)
             t.getInfo(i);
+        else
+            console.log("pingTracker: no key");
     }
     
         
@@ -379,6 +388,7 @@ pol.core.keySetup = class extends pol.core.Widget {
     isAvailable(i)
         {return this.myTrackers[i] != null && this.myTrackers[i].access;}
         
+        
     /* 
      * Set if we are authorised for access to the selected tracker.
      * a = we have acccess. d = access is denied. 
@@ -399,6 +409,7 @@ pol.core.keySetup = class extends pol.core.Widget {
     showError(i, x) {
         if (i==this.selected)
             this.error(x);
+        m.redraw();
     }
         
         
@@ -411,7 +422,6 @@ pol.core.keySetup = class extends pol.core.Widget {
         let t = this;
         this.clearerr();
         srv = t.myServers[i];
-        
         let auth_ok = false;
         let tout = setTimeout(()=> {
             if (auth_ok == false && t.isAvailable()) {
@@ -434,7 +444,6 @@ pol.core.keySetup = class extends pol.core.Widget {
                 const denied = (x.status != null && x.status==401) 
                 t.setAuth(i, false, denied); 
                 clearTimeout(tout);
-                m.redraw();
                 if (denied) 
                     t.showError(i, "Access denied: "+ t.myTrackers[i].id);
                 else
@@ -477,8 +486,7 @@ pol.core.keySetup = class extends pol.core.Widget {
                     }
                 }
             },            
-            x=> { 
-            }
+            x=> { }
         );
     }
     

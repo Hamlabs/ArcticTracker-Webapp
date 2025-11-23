@@ -28,11 +28,11 @@ pol.core.digiSetup = class extends pol.core.Widget {
         super();
         const t = this;
         t.classname = "core.digiSetup"; 
-        t.data = {digiOn:false, wide1:false, sar:false, igateOn:false, server: m.stream(""),  
+        t.data = {digiOn:false, dualOn:false, wide1:false, sar:false, igateOn:false, server: m.stream(""),  
             port: m.stream(""), user: m.stream(""), passcode: m.stream(""), filter: m.stream("")}; 
         t.dirty = false;   
         t.keys = pol.widget.get("core.keySetup");
-                
+        t.lora = true;         
                 
         this.widget = {
             view: function() {
@@ -47,7 +47,12 @@ pol.core.digiSetup = class extends pol.core.Widget {
                             m("span.leftlab", "Digipeat modes: "), [
                                 m(checkBox, {id: "wide1_on", checked: t.data.wide1, onclick: toggle("wide1")}, "Wide-1 "), nbsp,
                                 m(checkBox, {id: "sar_on", checked: t.data.sar, onclick: toggle("sar")}, "SAR preempt ")
-                            ]), br,
+                            ]), 
+                        (t.lora ? 
+                            m("div.field", 
+                                m("span.leftlab", "Lora dual mode: "),
+                                    m(checkBox, {id: "dual_on", checked: t.data.dualOn, onclick: toggle("dualOn")}, "On ")) : null), br,
+                      
                         m("div.field", 
                             m("span.leftlab", {class: "subsect"}, "Internet gate: "),  
                                 m(checkBox, {id: "igate_on", checked: t.data.igateOn, onclick: toggle("igateOn")}, "Activate")) ,
@@ -126,6 +131,7 @@ pol.core.digiSetup = class extends pol.core.Widget {
     getInfo() {
         this.keys.getSelectedSrv().GET( "api/digi", null, 
             st => {
+                this.lora = !st.txfreq;
               //  const st = JSON.parse(x);
                 this.data = st;
                 this.data.server = m.stream(st.server);

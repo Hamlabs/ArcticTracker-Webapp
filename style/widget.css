@@ -6,7 +6,7 @@ button, input {font-size: 90%}
 div.widget { overflow: hidden !important;}
 
 
-.leftlab, .sleftlab, .xsleftlab, label.lleftlab {
+.leftlab, .sleftlab, .xsleftlab, .xxsleftlab, label.lleftlab {
   float: left;
   width: 11em;
   text-align: right;
@@ -23,9 +23,16 @@ div.widget { overflow: hidden !important;}
   width: 4.5em;
 } 
 
+.xxsleftlab {
+  width: 2em;
+}
+
 .lleftlab {
   width: 7em;
 }
+
+
+
 
 input[type=text] {background: white; height: 1.6em}
 input[type=password] {background: white; height: 1.6em}
