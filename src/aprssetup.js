@@ -247,13 +247,16 @@ pol.core.aprsSetup = class extends pol.core.Widget {
             toNumber(obj, "lora_sf"); toNumber(obj, "lora_cr");
             toNumber(obj, "lora_alt_sf"); toNumber(obj, "lora_alt_cr");
             obj.freq *= 1000;
+            t.spinner(true);
             t.keys.getSelectedSrv().PUT( "api/aprs", JSON.stringify(obj),
                 ()=> {  
                     t.dirty = false; 
                     t.clearerr();
+                    t.spinner(false);
                 }, 
                 x=> { 
                     t.error("Update error (see browser log)", x);
+                    t.spinner(false);
                 }
             );
         }
@@ -262,6 +265,7 @@ pol.core.aprsSetup = class extends pol.core.Widget {
 
         
     getInfo() {
+         this.spinner(true);
          this.keys.getSelectedSrv().GET( "api/aprs", null, 
             st => {
                 this.lora = !st.txfreq;
@@ -293,9 +297,11 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                 this.dirty = false;
                 this.clearerr();
                 m.redraw();
+                this.spinner(false);
             }, 
             x=> { 
                 this.error("Cannot GET data (se browser log)", x);
+                this.spinner(false);
             }
         );
     }

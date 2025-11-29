@@ -113,14 +113,16 @@ pol.core.digiSetup = class extends pol.core.Widget {
         function update() {
             var obj = Object.assign({}, t.data); 
             toNumber(obj, "port"); toNumber(obj, "passcode"); 
-
+            t.spinner(true);
             t.keys.getSelectedSrv().PUT( "api/digi", JSON.stringify(obj),
                 ()=> { 
                     t.dirty = false; 
                     t.clearerr();
+                    t.spinner(false);
                 }, 
                 x=> { 
                     t.error("Update error (see browser log)", x);
+                    t.spinner(false);
                 }
             );
         }
@@ -129,10 +131,12 @@ pol.core.digiSetup = class extends pol.core.Widget {
 
         
     getInfo() {
+        
+        this.spinner(true);
         this.keys.getSelectedSrv().GET( "api/digi", null, 
             st => {
+                
                 this.lora = !st.txfreq;
-              //  const st = JSON.parse(x);
                 this.data = st;
                 this.data.server = m.stream(st.server);
                 this.data.port = m.stream(""+st.port);
@@ -141,10 +145,12 @@ pol.core.digiSetup = class extends pol.core.Widget {
                 this.data.filter = m.stream(st.filter);
                 this.dirty = false;         
                 this.clearerr();
+                this.spinner(false);
             },
             x=> { 
                 console.log(x);
                 this.error("Cannot GET data (se browser log)", x);
+                this.spinner(false);
             }
         );
     }

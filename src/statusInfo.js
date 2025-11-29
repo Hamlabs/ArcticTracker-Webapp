@@ -70,7 +70,6 @@ pol.core.statusInfo = class extends pol.core.Widget {
             }
         };
     
-        setInterval(()=>t.getInfo(), 30000);
         
         
         function toKbytes(x) {
@@ -79,17 +78,20 @@ pol.core.statusInfo = class extends pol.core.Widget {
         
     }    
         
-        
+    /* Get info from tracker */    
     getInfo() {
+        this.spinner(true);
         this.keys.getSelectedSrv().GET( "api/info", null, 
             st => {
                 this.data = st;
                 pol.widget.get("core.keySetup").setAuth(-1, true, false)
                 this.clearerr();
+                this.spinner(false);
             },            
             x=> { 
                 pol.widget.get("core.keySetup").setAuth(-1, false, (x.status != null && x.status==401))
                 this.error("Cannot GET data (se browser log)", x);
+                this.spinner(false);
             }
         );
     }

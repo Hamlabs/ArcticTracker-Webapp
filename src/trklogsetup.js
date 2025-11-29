@@ -103,14 +103,16 @@ pol.core.trklogSetup = class extends pol.core.Widget {
         function update() {
             var obj = Object.assign({}, t.data); 
             toNumber(obj, "interv"); toNumber(obj, "ttl"); 
-
+            t.spinner(true);
             t.keys.getSelectedSrv().PUT( "api/trklog", JSON.stringify(obj),
                 ()=> { 
                     t.dirty = false; 
-                    t.clearerr(); 
+                    t.clearerr();
+                    t.spinner(false);
                 }, 
                 x=> { 
                     t.error("Update error (see browser log)", x);
+                    t.spinner(false);
                 }
             );
         }
@@ -119,6 +121,7 @@ pol.core.trklogSetup = class extends pol.core.Widget {
 
         
     getInfo() {
+        this.spinner(true);
         this.keys.getSelectedSrv().GET( "api/trklog", null, 
             st => {
               //  const st = JSON.parse(x);
@@ -129,9 +132,11 @@ pol.core.trklogSetup = class extends pol.core.Widget {
                 this.data.ttl = m.stream(st.ttl);
                 this.dirty = false
                 this.clearerr();
+                this.spinner(false);
             }, 
             x=> { 
                 this.error("Cannot GET data (se browser log)", x);
+                this.spinner(false);
             }
         );
     }

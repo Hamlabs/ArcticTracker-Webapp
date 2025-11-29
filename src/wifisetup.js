@@ -120,14 +120,17 @@ pol.core.wifiSetup = class extends pol.core.Widget {
             
         function update() {
             var obj = Object.assign({}, t.data); 
+            t.spinner(true);
             t.keys.getSelectedSrv().PUT( "api/wifi", JSON.stringify(obj),
                 ()=> { 
                     t.dirty = false; 
                     t.data.apikey("");
                     t.clearerr();
+                    t.spinner(false);
                 }, 
                 x=> { 
                     t.error("Update error (see browser log)", x);
+                    t.spinner(false);
                 }
             );
         }
@@ -136,6 +139,7 @@ pol.core.wifiSetup = class extends pol.core.Widget {
 
         
     getInfo() {
+         this.spinner(true);
          this.keys.getSelectedSrv().GET( "api/wifi", null, 
             st => {
               //  const st = JSON.parse(x);
@@ -152,9 +156,11 @@ pol.core.wifiSetup = class extends pol.core.Widget {
                 }
                 this.dirty = false;
                 this.clearerr();
+                this.spinner(false);
             }, 
             x=> { 
                 this.error("Cannot GET data (se browser log)", x);
+                this.spinner(false);
             }
         );
     }

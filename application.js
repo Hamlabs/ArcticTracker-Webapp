@@ -91,7 +91,8 @@ menu = {
                 m("span"+isSel("core.wifiSetup"),   {onclick: show("core.wifiSetup")},    "Wifi"),   
                 m("span"+isSel("core.aprsSetup"),   {onclick: show("core.aprsSetup")},    "Aprs"),
                 m("span"+isSel("core.digiSetup"),   {onclick: show("core.digiSetup")},    "Digi/Igate"), 
-                m("span"+isSel("core.trklogSetup"), {onclick: show("core.trklogSetup")},  "Trklog"), 
+                m("span"+isSel("core.trklogSetup"), {onclick: show("core.trklogSetup")},  "Trklog"), nbsp,
+                m("img.spinner", {src:"img/spinner.gif"} ),
             ]),
 
         ])
