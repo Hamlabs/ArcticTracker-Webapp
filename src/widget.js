@@ -326,6 +326,7 @@ pol.core.Widget = class {
             $('img.spinner').css("visibility",'visible');
         else
             $('img.spinner').css("visibility",'hidden');
+        m.redraw();
     }
     
 } /* class */

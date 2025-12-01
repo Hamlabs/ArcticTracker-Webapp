@@ -28,8 +28,7 @@ pol.core.digiSetup = class extends pol.core.Widget {
         super();
         const t = this;
         t.classname = "core.digiSetup"; 
-        t.data = {digiOn:false, dualOn:false, wide1:false, sar:false, igateOn:false, server: m.stream(""),  
-            port: m.stream(""), user: m.stream(""), passcode: m.stream(""), filter: m.stream("")}; 
+        t.data = t.emptyData();
         t.dirty = false;   
         t.keys = pol.widget.get("core.keySetup");
         t.lora = true;         
@@ -113,29 +112,35 @@ pol.core.digiSetup = class extends pol.core.Widget {
         function update() {
             var obj = Object.assign({}, t.data); 
             toNumber(obj, "port"); toNumber(obj, "passcode"); 
+            t.clearerr();
             t.spinner(true);
             t.keys.getSelectedSrv().PUT( "api/digi", JSON.stringify(obj),
                 ()=> { 
                     t.dirty = false; 
-                    t.clearerr();
                     t.spinner(false);
                 }, 
                 x=> { 
-                    t.error("Update error (see browser log)", x);
+                    t.error("Cannot update tracker", x);
                     t.spinner(false);
                 }
             );
         }
     }    
-        
-
+     
+     
+    emptyData() {
+        return {digiOn:false, dualOn:false, wide1:false, sar:false, igateOn:false, server: m.stream(""),  
+            port: m.stream(""), user: m.stream(""), passcode: m.stream(""), filter: m.stream("")}; 
+    }
+    
+    
         
     getInfo() {
-        
+        this.clearerr();
+        this.data = this.emptyData();
         this.spinner(true);
         this.keys.getSelectedSrv().GET( "api/digi", null, 
             st => {
-                
                 this.lora = !st.txfreq;
                 this.data = st;
                 this.data.server = m.stream(st.server);
@@ -144,12 +149,13 @@ pol.core.digiSetup = class extends pol.core.Widget {
                 this.data.passcode = m.stream(st.passcode);
                 this.data.filter = m.stream(st.filter);
                 this.dirty = false;         
-                this.clearerr();
                 this.spinner(false);
+                m.redraw();
+                
             },
             x=> { 
                 console.log(x);
-                this.error("Cannot GET data (se browser log)", x);
+                this.error("Cannot GET data from tracker", x);
                 this.spinner(false);
             }
         );

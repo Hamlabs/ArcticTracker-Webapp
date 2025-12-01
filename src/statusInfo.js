@@ -28,7 +28,7 @@ pol.core.statusInfo = class extends pol.core.Widget {
         super();
         const t = this;
         t.classname = "core.statusInfo"; 
-        t.data = {heap:0, flash:0, ap:"-", ipaddr:"-", macaddr: "-",  mdns: "-", vbatt: "-", device: "-", version: "-"}; 
+        t.data = t.emptyData();
         t.keys = pol.widget.get("core.keySetup");
         
         this.widget = {
@@ -77,20 +77,29 @@ pol.core.statusInfo = class extends pol.core.Widget {
         }
         
     }    
+    
+    
+    emptyData() {
+       return {heap:0, flash:0, ap:"-", ipaddr:"-", macaddr: "-",  mdns: "-", vbatt: "-", device: "-", version: "-"}; 
+    }
+    
+    
         
     /* Get info from tracker */    
     getInfo() {
+        this.clearerr();
+        this.data = this.emptyData();
         this.spinner(true);
         this.keys.getSelectedSrv().GET( "api/info", null, 
             st => {
                 this.data = st;
                 pol.widget.get("core.keySetup").setAuth(-1, true, false)
-                this.clearerr();
                 this.spinner(false);
+                m.redraw();
             },            
             x=> { 
                 pol.widget.get("core.keySetup").setAuth(-1, false, (x.status != null && x.status==401))
-                this.error("Cannot GET data (se browser log)", x);
+                this.error("Cannot GET data from tracker", x);
                 this.spinner(false);
             }
         );

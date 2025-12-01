@@ -107,11 +107,13 @@ pol.core.keySetup = class extends pol.core.Widget {
                 m.redraw();
             });
             
+        
             
         setTimeout(scanTrackers,   2000);
         setInterval(scanTrackers, 15000);
         setTimeout( scanMdns,      4000);
         setInterval(scanMdns,     20000);
+        
         
         
         function _select(i) {
@@ -129,6 +131,9 @@ pol.core.keySetup = class extends pol.core.Widget {
         }
         
         
+        /* Scan mDBS for trackers. Either directly if we are running on a mobile phone or
+         * by calling another tracker's mDNS service. 
+         */
         function scanMdns() {
             if (t.scanMdns != null) {
                 t.scanMdns(t); 
@@ -235,7 +240,6 @@ pol.core.keySetup = class extends pol.core.Widget {
      * Select next tracker in list. 
      */
     selectNext() {
-        console.log("selectNext");
         if (this.myTrackers.length <= 1)
             return;
         let i = this.selected;
@@ -304,7 +308,6 @@ pol.core.keySetup = class extends pol.core.Widget {
             m.redraw();
             index = i;
         }
-        console.log("Added/updated tracker: "+id+ " trying to ping it.", index);
         this.pingTracker(index);            
         return true;
     }
@@ -453,6 +456,9 @@ pol.core.keySetup = class extends pol.core.Widget {
     }
     
       
+    /* 
+     * Get observed tracker (mDNS) from a connected tracker 
+     */  
     getMdns(i) {
         let srv = null;
         let t = this;
@@ -466,6 +472,7 @@ pol.core.keySetup = class extends pol.core.Widget {
                 const tr = JSON.parse(ttr);
                 if (tr == null || tr.length == 0) 
                     return; 
+                
                 for (const tt of tr) {
                     const id = tt.host.split(/[Aa]rctic-/);
                     if (id[1]) {
@@ -489,7 +496,6 @@ pol.core.keySetup = class extends pol.core.Widget {
             x=> { }
         );
     }
-    
     
     
     

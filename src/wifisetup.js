@@ -23,16 +23,7 @@ pol.core.wifiSetup = class extends pol.core.Widget {
         super();
         const t = this;
         t.classname = "core.wifiSetup"; 
-        t.data = {
-            apssid: "", appass:m.stream(""),  
-            fwurl:m.stream(""), apikey:m.stream(""),
-            ap_0_ssid:m.stream(""), ap_0_pw:m.stream(""), 
-            ap_1_ssid:m.stream(""), ap_1_pw:m.stream(""),
-            ap_2_ssid:m.stream(""), ap_2_pw:m.stream(""),
-            ap_3_ssid:m.stream(""), ap_3_pw:m.stream(""), 
-            ap_4_ssid:m.stream(""), ap_4_pw:m.stream(""),
-            ap_5_ssid:m.stream(""), ap_5_pw:m.stream("")
-        };
+        t.data = t.emptyData();
         t.dirty = false;    
         t.keys = pol.widget.get("core.keySetup");
         
@@ -119,17 +110,17 @@ pol.core.wifiSetup = class extends pol.core.Widget {
 
             
         function update() {
+            this.clearerr();
             var obj = Object.assign({}, t.data); 
             t.spinner(true);
             t.keys.getSelectedSrv().PUT( "api/wifi", JSON.stringify(obj),
                 ()=> { 
                     t.dirty = false; 
                     t.data.apikey("");
-                    t.clearerr();
                     t.spinner(false);
                 }, 
                 x=> { 
-                    t.error("Update error (see browser log)", x);
+                    t.error("Cannot update tracker", x);
                     t.spinner(false);
                 }
             );
@@ -138,7 +129,24 @@ pol.core.wifiSetup = class extends pol.core.Widget {
         
 
         
+    emptyData() {
+        return {
+            apssid: "", appass:m.stream(""),  
+            fwurl:m.stream(""), apikey:m.stream(""),
+            ap_0_ssid:m.stream(""), ap_0_pw:m.stream(""), 
+            ap_1_ssid:m.stream(""), ap_1_pw:m.stream(""),
+            ap_2_ssid:m.stream(""), ap_2_pw:m.stream(""),
+            ap_3_ssid:m.stream(""), ap_3_pw:m.stream(""), 
+            ap_4_ssid:m.stream(""), ap_4_pw:m.stream(""),
+            ap_5_ssid:m.stream(""), ap_5_pw:m.stream("")
+        };
+    }
+    
+    
+        
     getInfo() {
+         this.clearerr();
+         this.data = this.emptyData();
          this.spinner(true);
          this.keys.getSelectedSrv().GET( "api/wifi", null, 
             st => {
@@ -155,11 +163,11 @@ pol.core.wifiSetup = class extends pol.core.Widget {
                     this.data['ap_'+i+'_pw'] = m.stream(st['ap_'+i+'_pw']);
                 }
                 this.dirty = false;
-                this.clearerr();
                 this.spinner(false);
+                 m.redraw();
             }, 
             x=> { 
-                this.error("Cannot GET data (se browser log)", x);
+                this.error("Cannot GET data from tracker", x);
                 this.spinner(false);
             }
         );

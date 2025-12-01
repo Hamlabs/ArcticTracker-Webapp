@@ -29,8 +29,7 @@ pol.core.trklogSetup = class extends pol.core.Widget {
         super();
         const t = this;
         t.classname = "core.trklogSetup"; 
-        t.data = {trklog_on:false, trkpost_on:false, url: m.stream(""),  key: m.stream(""), 
-                  interv: m.stream(""), ttl: m.stream("")}; 
+        t.data = t.emptyData();
         t.dirty = false;  
         t.keys = pol.widget.get("core.keySetup");
         
@@ -103,15 +102,15 @@ pol.core.trklogSetup = class extends pol.core.Widget {
         function update() {
             var obj = Object.assign({}, t.data); 
             toNumber(obj, "interv"); toNumber(obj, "ttl"); 
+            t.clearerr();
             t.spinner(true);
             t.keys.getSelectedSrv().PUT( "api/trklog", JSON.stringify(obj),
                 ()=> { 
                     t.dirty = false; 
-                    t.clearerr();
                     t.spinner(false);
                 }, 
                 x=> { 
-                    t.error("Update error (see browser log)", x);
+                    t.error("Cannot update tracker", x);
                     t.spinner(false);
                 }
             );
@@ -119,8 +118,15 @@ pol.core.trklogSetup = class extends pol.core.Widget {
     }    
         
 
+    emptyData() {
+        return {trklog_on:false, trkpost_on:false, url: m.stream(""),  key: m.stream(""), 
+                  interv: m.stream(""), ttl: m.stream("")}; 
+    }
+    
         
     getInfo() {
+        this.clearerr();
+        this.data = this.emptyData(); 
         this.spinner(true);
         this.keys.getSelectedSrv().GET( "api/trklog", null, 
             st => {
@@ -131,11 +137,11 @@ pol.core.trklogSetup = class extends pol.core.Widget {
                 this.data.interv = m.stream(st.interv);
                 this.data.ttl = m.stream(st.ttl);
                 this.dirty = false
-                this.clearerr();
                 this.spinner(false);
+                m.redraw();
             }, 
             x=> { 
-                this.error("Cannot GET data (se browser log)", x);
+                this.error("Cannot GET data from tracker", x);
                 this.spinner(false);
             }
         );

@@ -27,12 +27,7 @@ pol.core.aprsSetup = class extends pol.core.Widget {
         super();
         const t = this;
         t.classname = "core.aprsSetup"; 
-        t.data = {
-            mycall:m.stream(""), symbol:m.stream(""), path:m.stream(""), comment:m.stream(""), 
-            txfreq:m.stream(""), rxfreq:m.stream(""), freq:m.stream(""),txpower:m.stream(""), 
-            lora_sf:m.stream(""),lora_cr:m.stream(""),lora_alt_sf:m.stream(""),lora_alt_cr:m.stream(""),
-            maxpause:m.stream(""), minpause:m.stream(""), mindist:m.stream(""), repeat:m.stream(""), turnlimit:m.stream(""),
-            timestamp:false, compress:false, altitude:false, extraturn:false };
+        t.data = t.emptyData();
         t.dirty = false;    
         t.keys = pol.widget.get("core.keySetup");
         t.lora = true; 
@@ -247,15 +242,15 @@ pol.core.aprsSetup = class extends pol.core.Widget {
             toNumber(obj, "lora_sf"); toNumber(obj, "lora_cr");
             toNumber(obj, "lora_alt_sf"); toNumber(obj, "lora_alt_cr");
             obj.freq *= 1000;
+            t.clearerr();
             t.spinner(true);
             t.keys.getSelectedSrv().PUT( "api/aprs", JSON.stringify(obj),
                 ()=> {  
                     t.dirty = false; 
-                    t.clearerr();
                     t.spinner(false);
                 }, 
                 x=> { 
-                    t.error("Update error (see browser log)", x);
+                    t.error("Cannot update tracker", x);
                     t.spinner(false);
                 }
             );
@@ -264,7 +259,20 @@ pol.core.aprsSetup = class extends pol.core.Widget {
         
 
         
+    emptyData() {
+        return {
+            mycall:m.stream(""), symbol:m.stream(""), path:m.stream(""), comment:m.stream(""), 
+            txfreq:m.stream(""), rxfreq:m.stream(""), freq:m.stream(""),txpower:m.stream(""), 
+            lora_sf:m.stream(""),lora_cr:m.stream(""),lora_alt_sf:m.stream(""),lora_alt_cr:m.stream(""),
+            maxpause:m.stream(""), minpause:m.stream(""), mindist:m.stream(""), repeat:m.stream(""), turnlimit:m.stream(""),
+            timestamp:false, compress:false, altitude:false, extraturn:false };
+    }
+    
+    
+        
     getInfo() {
+         this.clearerr();
+         this.data = this.emptyData();
          this.spinner(true);
          this.keys.getSelectedSrv().GET( "api/aprs", null, 
             st => {
@@ -295,12 +303,11 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                 this.data.mindist = m.stream(st.mindist);
                 this.data.repeat = m.stream(st.repeat); 
                 this.dirty = false;
-                this.clearerr();
                 m.redraw();
                 this.spinner(false);
             }, 
             x=> { 
-                this.error("Cannot GET data (se browser log)", x);
+                this.error("Cannot GET data from tracker", x);
                 this.spinner(false);
             }
         );
