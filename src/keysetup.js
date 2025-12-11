@@ -350,7 +350,7 @@ pol.core.keySetup = class extends pol.core.Widget {
         const t = this;
         this.dirty = false;
         if (t.myServers[i].key != null)
-            t.getInfo(i);
+            t.getInfo(i, true);
         else
             console.log("pingTracker: no key");
     }
@@ -420,7 +420,7 @@ pol.core.keySetup = class extends pol.core.Widget {
      * Contact the REST API of the given tracker to determine if we are 
      * authenticated and authorised for access. 
      */    
-    getInfo(i) {
+    getInfo(i, silent) {
         let srv = null;
         let t = this;
         this.clearerr();
@@ -429,7 +429,9 @@ pol.core.keySetup = class extends pol.core.Widget {
         let tout = setTimeout(()=> {
             if (auth_ok == false && t.isAvailable()) {
                 t.setAuth(i, false, false); 
-                t.showError(i, "Timeout (no response): "+ t.myTrackers[i].id);
+                m.redraw();
+                if (!silent)
+                    t.showError(i, "Timeout (no response): "+ t.myTrackers[i].id);
             }
         }, 10000);
 
@@ -442,11 +444,12 @@ pol.core.keySetup = class extends pol.core.Widget {
             },            
             (x,y,z) => { 
                 clearTimeout(tout);
-                if (t.isAvailable()==false || i >= this.myTrackers.length)
-                    return;
                 const denied = (x.status != null && x.status==401) 
                 t.setAuth(i, false, denied); 
+                m.redraw();
                 clearTimeout(tout);
+                if (silent)
+                    return;
                 if (denied) 
                     t.showError(i, "Access denied: "+ t.myTrackers[i].id);
                 else
