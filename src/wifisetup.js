@@ -44,7 +44,7 @@ pol.core.wifiSetup = class extends pol.core.Widget {
                       
                         m("div.field", {className: "ap"}, 
                             m("span.leftlab", ""),
-                            m("span.whead", "SSID"),
+                            m("span.whead", "WIFI SSID"),nbsp,"/",nbsp,
                             m("span.whead", "Password")
                         ),
                         m("div.field", {className: "ap"},  
@@ -73,10 +73,13 @@ pol.core.wifiSetup = class extends pol.core.Widget {
                             m(textInput, {passwd: true, value: t.data.ap_5_pw, size: 12, maxLength:64, onchange: dirty, regex: /^.*$/i })), br,
                         
                         m("div.field", 
-                            m("span.leftlab", "FW upd URL: "),  
+                            m("span.leftlab", {title: "URL for OTA Firmware upgrade"}, "FW upd URL: "),  
                             m(textInput, {id: "fwupd", value: t.data.fwurl, size: 30, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\/\:]+$/i })),
                         m("div.field", {className: "key"},
-                            m("span.leftlab", "API Key: "),  
+                            m("span.leftlab", {title: "Enter key or passphrase (for encryption of APRS packets)"}, "Crypto Key: "),  
+                            m(textInput, {id: "cryptokey", value: t.data.cryptokey, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i })), 
+                      m("div.field", {className: "key"},
+                            m("span.leftlab", {title: "Enter key or passphrase (for web/app access)"}, "API Key: "),  
                             m(textInput, {id: "apikey", value: t.data.apikey, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i })), 
                         
                         m("div.butt", 
@@ -110,7 +113,6 @@ pol.core.wifiSetup = class extends pol.core.Widget {
 
             
         function update() {
-            this.clearerr();
             var obj = Object.assign({}, t.data); 
             t.spinner(true);
             t.keys.getSelectedSrv().PUT( "api/wifi", JSON.stringify(obj),
@@ -132,7 +134,9 @@ pol.core.wifiSetup = class extends pol.core.Widget {
     emptyData() {
         return {
             apssid: "", appass:m.stream(""),  
-            fwurl:m.stream(""), apikey:m.stream(""),
+            fwurl:m.stream(""), 
+            cryptokey:m.stream(""),
+            apikey:m.stream(""),
             ap_0_ssid:m.stream(""), ap_0_pw:m.stream(""), 
             ap_1_ssid:m.stream(""), ap_1_pw:m.stream(""),
             ap_2_ssid:m.stream(""), ap_2_pw:m.stream(""),
@@ -157,7 +161,8 @@ pol.core.wifiSetup = class extends pol.core.Widget {
                 this.data.htpass = m.stream(st.htpass);
                 this.data.fwurl = m.stream(st.fwurl);
                 this.data.apikey = m.stream("");
-                  // FIXME: Don't send the key from the server
+                this.data.cryptokey = m.stream("");
+
                 for (var i=0; i<6; i++) {
                     this.data['ap_'+i+'_ssid'] = m.stream(st['ap_'+i+'_ssid']);
                     this.data['ap_'+i+'_pw'] = m.stream(st['ap_'+i+'_pw']);

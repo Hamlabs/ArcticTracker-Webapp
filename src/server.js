@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2022-2024 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
+ Copyright (C) 2022-2026 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published 
@@ -120,6 +120,7 @@ pol.core.Server = class {
             return null;
         if (message != null && message != "")
             msgHash = await pol.security.Sha256_B64(message)
+        console.log("KEY", this.key);
         return await pol.security.hmac_Sha256_B64(this.key, nonce+msgHash);
     }
     
@@ -128,9 +129,12 @@ pol.core.Server = class {
     
     /* Set the secret key and save it in datastore */
     async setKey(secret) {
-        await pol.security.hmac_getKey(secret)
+        await pol.security.hmac_deriveKey(secret)
            .then( x=> {
-               this.key = x;
+               this.key = x;    
+               crypto.subtle.exportKey("raw", x).then( z =>{
+                    console.log("DERIVED KEY", z);
+               });
                CONFIG.datastore.setItem("arctic.key."+this.id, x);
             } );
         return true;

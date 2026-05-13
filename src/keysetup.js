@@ -59,7 +59,11 @@ pol.core.keySetup = class extends pol.core.Widget {
                     m("form.key", [  
                         br,
                         (t.errmsg != null && t.errmsg != "" ? m("div#errmsg", t.errmsg) : null),
-
+                      
+                        m("div.field", 
+                            m("span.leftlab", "Local: "),  
+                            m("span", (t.trackerid() !="" ?  m("a", {target: "new", href: "https://arctic-"+t.trackerid()+".local"},"Access device")  : "-"))), 
+                      
                         m("div.field", 
                             m("span.leftlab", "Tracker id: "),  
                             m(textInput, {id: "trid", value: t.trackerid, size: 15, maxLength:32,  onchange: dirtyid, regex: /^[a-zA-Z0-9\-\.]+$/i })),
@@ -153,13 +157,17 @@ pol.core.keySetup = class extends pol.core.Widget {
          * Add tracker to list. 
          */
         function add() {
-            t.addTracker(t.trackerid());
+            const id = t.trackerid().toUpperCase();
+            t.addTracker(id);
+            t.getSelected().id = id;
+            t.getSelectedSrv().setId(id);
             t.dirty = false;
             
             /* Key */
             if (t.key() == "")
                 return;
             t.setKey(t.key());
+            m.redraw();
         }
         
         

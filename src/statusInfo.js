@@ -64,7 +64,9 @@ pol.core.statusInfo = class extends pol.core.Widget {
                         m("div.field", 
                             m("span.leftlab", "Battery voltage: "), t.data.vbatt + " V  ("+t.data.vpercent+" %)" ), 
                         m("div.field", 
-                            m("span.leftlab", "Battery status: "), t.data.battstatus ), br
+                            m("span.leftlab", "Battery status: "), t.data.battstatus ),                         
+                        m("div.field", 
+                            m("span.leftlab", "Charging: "), (t.data.charging ? "Yes" : "No") ), br
                     ])
                 ])
             }

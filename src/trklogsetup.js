@@ -36,12 +36,12 @@ pol.core.trklogSetup = class extends pol.core.Widget {
         this.widget = {
             view: function() {
                 return m("div#trklog", [       
-                    m("h1", "Track logging configuration"),
+                    m("h1", "Misc. configuration (tracklog, etc)"),
                     (t.errmsg != null ? m("div#errmsg", t.errmsg) : null),
                     m("form.digi", [  
                         m("div.field", 
                             m("span.leftlab", {class: "subsect"}, "Track logging: "),  
-                            m(checkBox, {checked: t.data.trklog_on, onclick: toggle("trklog_on") }, "Activate")), 
+                            m(checkBox, {checked: t.data.trklog_on, onclick: toggle("trklog_on") }, "Enable")), 
                         m("div.field", 
                             m("span.leftlab", "Save interval: "),  
                             m(textInput, {value: t.data.interv, size: 3, maxLength:4, onchange: dirty, regex: /^[0-9\-]+$/i }), 
@@ -52,13 +52,13 @@ pol.core.trklogSetup = class extends pol.core.Widget {
                                 nbsp, "(days)" ), br,
                       
                         m("div.field", 
-                            m("span.leftlab", {class: "subsect"}, "Auto upload: "),  
-                            m(checkBox, {checked: t.data.trkpost_on, onclick: toggle("trkpost_on") }, "Activate")), 
+                            m("span.leftlab", {class: "subsect"}, "Auto upload trklog: "),  
+                            m(checkBox, {checked: t.data.trkpost_on, onclick: toggle("trkpost_on") }, "Enable")), 
                         m("div.field", 
-                            m("span.leftlab", "Server URL: "),  
+                            m("span.leftlab", {title: "URL for posting track-logs"}, "Server URL: "),  
                             m(textInput, {id: "tlsrv", value: t.data.url, size: 31, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\:\/]+$/i })),
                         m("div.field", 
-                            m("span.leftlab", "Server key: "),  
+                            m("span.leftlab", {title: "Enter key or passphrase (for tracklog access)"}, "Server key: "),  
                             m(textInput, {id: "tlkey", value: t.data.key, size: 31, maxLength:128,  onchange: dirty, regex: /^.*$/i })),
                       
                         m("div.butt", 

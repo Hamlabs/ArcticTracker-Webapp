@@ -1,6 +1,6 @@
  
 /*
- Copyright (C) 2024 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
+ Copyright (C) 2024-2026 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published 
@@ -39,17 +39,46 @@ pol.security.bin2base64 = function(arr) {
 }
 
 
+pol.security.hmac_deriveKey = async function(secret) {
+    const baseKey = await crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(secret),
+        { name: "PBKDF2" },
+        false,
+        ["deriveKey", "deriveBits"]
+    );
+    
+    const _key = await crypto.subtle.deriveKey(
+        {
+            name: "PBKDF2",
+            salt: (new TextEncoder().encode("Qcb_N56Z9e@A1.8),&#++ekwR]?xc<y_")),
+            iterations: 16384,
+            hash: "SHA-256"      
+        },
+        baseKey,
+        { name: "HMAC", hash: "SHA-256", length: 256 }, 
+        true,   
+        ["sign", "verify"]     
+    );
+    return _key;
+}
+
+
+
+/* Generate a key from a Base64 encoded string */
 pol.security.hmac_getKey = async function(secret) {
-    const enc = new TextEncoder("utf-8");
+ //   const enc = new TextEncoder("utf-8");
+    console.log("GETKEY", secret);
     const algorithm = { name: "HMAC", hash: "SHA-256" };
     const _key = await crypto.subtle.importKey(
         "raw",
-        enc.encode(secret),
+        Uint8Array.fromBase64(secret),
         algorithm,
         false, ["sign", "verify"]
     );
     return _key;
 }
+
 
 
 /* Generate a hmac-sha256 hash from key and message */

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2022-2024 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
+ Copyright (C) 2022-2026 Øyvind Hanssen, LA7ECA, ohanssen@acm.org
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published 
@@ -41,7 +41,7 @@ pol.core.digiSetup = class extends pol.core.Widget {
                     m("form.digi", [  
                         m("div.field", 
                             m("span.leftlab", {class: "subsect"}, "Digipeater: "),  
-                                m(checkBox, {id: "digi_on",  checked: t.data.digiOn, onclick: toggle("digiOn") }, "Activate")), 
+                                m(checkBox, {id: "digi_on",  checked: t.data.digiOn, onclick: toggle("digiOn") }, "Enable")), 
                         m("div.field", 
                             m("span.leftlab", "Digipeat modes: "), [
                                 m(checkBox, {id: "wide1_on", checked: t.data.wide1, onclick: toggle("wide1")}, "Wide-1 "), nbsp,
@@ -49,12 +49,13 @@ pol.core.digiSetup = class extends pol.core.Widget {
                             ]), 
                         (t.lora ? 
                             m("div.field", 
-                                m("span.leftlab", "Lora dual mode: "),
+                                m("span.leftlab", {title: "Transmit with another spread-factor (alt)"}, "Lora dual mode: "),
                                     m(checkBox, {id: "dual_on", checked: t.data.dualOn, onclick: toggle("dualOn")}, "On ")) : null), br,
                       
                         m("div.field", 
                             m("span.leftlab", {class: "subsect"}, "Internet gate: "),  
-                                m(checkBox, {id: "igate_on", checked: t.data.igateOn, onclick: toggle("igateOn")}, "Activate")) ,
+                                m(checkBox, {id: "igate_on", checked: t.data.igateOn, onclick: toggle("igateOn")}, "Enable") ,
+                                m(checkBox, {id: "igtrack_on", checked: t.data.igtrackOn, onclick: toggle("igtrackOn")}, "Tracking via igate")), 
                         m("div.field", 
                             m("span.leftlab", "APRS/IS server: "),  
                             m(textInput, {id:"aprs_server", value: t.data.server, size: 20, maxLength:40, onchange: dirty,
@@ -65,15 +66,15 @@ pol.core.digiSetup = class extends pol.core.Widget {
                                 regex: /^[0-9\-]+$/i })),
                         m("div.field", 
                             m("span.leftlab", "Username: "),  
-                            m(textInput, {id:"username", value: t.data.user, size: 10, maxLength:30, onchange: dirty,  
+                            m(textInput, {id:"username", value: t.data.user, size: 12, maxLength:30, onchange: dirty,  
                                 regex: /^[a-zA-Z0-9\-]+$/i })),
                         m("div.field", 
                             m("span.leftlab", "Passcode: "),  
-                            m(textInput, {id:"passcode", value: t.data.passcode, size: 5, maxLength:5, onchange: dirty,
-                                regex: /^[0-9\-]+$/i })), 
+                            m(textInput, {id:"passcode", value: t.data.passcode, size: 12, maxLength:30, onchange: dirty,
+                                regex: /^[0-9a-zA-Z\+\/\=]+$/i })), 
                         m("div.field", 
                             m("span.leftlab", "Filter: "),  
-                            m(textInput, {id:"filter", value: t.data.filter, size: 10, maxLength:30, onchange: dirty,
+                            m(textInput, {id:"filter", value: t.data.filter, size: 12, maxLength:30, onchange: dirty,
                                 regex: /^.*$/i })),
                       
                         m("div.butt", 

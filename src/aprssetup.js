@@ -96,7 +96,7 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                             {label: "House", val: '/-'}, 
                             {label: "Red Cross", val: '/+'},
                             {label: "APRS igate", val: '/&'},
-                            {label: "LoRa igate", val: 'L&'},
+                            {label: "LoRa igate", val: 'La'},
                             {label: "Fill-in digi", val: '1#'},
                         ]
                     })
@@ -153,11 +153,16 @@ pol.core.aprsSetup = class extends pol.core.Widget {
                         m("span", (t.lora ? m(lora_radio) : m(radio))), br,
                       
                         m("div.field",                                    
+                            m("span.leftlab", {class: "subsect"}, "Security"), m("span.check", [
+                                m("label", m(checkBox, {id: "crypto_on", checked: t.data.crypto, onclick: toggle("crypto"), 
+                                   title: "Encrypt APRS packets (remember to set the key and be sure it is legal)"}, "Encrypt")),
+                            ])), 
+                        m("div.field",                                    
                             m("span.leftlab", {class: "subsect"}, "Track settings: "), m("span.check", [
                                 m("label", m(checkBox, {id: "timestamp_on", checked: t.data.timestamp, onclick: toggle("timestamp")}, "Timestamp ")), nbsp,
                                 m("label", m(checkBox, {id: "compress_on",  checked: t.data.compress,  onclick: toggle("compress")}, "Compress ")), " ", 
                                 m("label", m(checkBox, {id: "altitude_on",  checked: t.data.altitude,  onclick: toggle("altitude")}, "Altitude "))
-                            ])), 
+                            ])),
                         
                         m("div.field", 
                             m("span.leftlab", "Turn limit: "),  
