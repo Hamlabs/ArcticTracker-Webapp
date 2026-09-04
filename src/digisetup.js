@@ -44,13 +44,19 @@ pol.core.digiSetup = class extends pol.core.Widget {
                                 m(checkBox, {id: "digi_on",  checked: t.data.digiOn, onclick: toggle("digiOn") }, "Enable")), 
                         m("div.field", 
                             m("span.leftlab", "Digipeat modes: "), [
-                                m(checkBox, {id: "wide1_on", checked: t.data.wide1, onclick: toggle("wide1")}, "Wide-1 "), nbsp,
-                                m(checkBox, {id: "sar_on", checked: t.data.sar, onclick: toggle("sar")}, "SAR preempt ")
+                                m(checkBox, {title: "React on WIDE1 alias (first hop)", 
+                                    id: "wide1_on", checked: t.data.wide1, onclick: toggle("wide1")}, "Wide1 "), nbsp,
+                                m(checkBox, {ttile: "React on WIDE2 alias (up to 2 hops)", 
+                                    id: "wide2_on", checked: t.data.wide2, onclick: toggle("wide2")}, "Wide2 "), nbsp,
+                                m(checkBox, {title: "Preemption on SAR alias", 
+                                    id: "sar_on", checked: t.data.sar, onclick: toggle("sar")}, "SAR ")
                             ]), 
                         (t.lora ? 
                             m("div.field", 
                                 m("span.leftlab", {title: "Transmit with another spread-factor (alt)"}, "Lora dual mode: "),
-                                    m(checkBox, {id: "dual_on", checked: t.data.dualOn, onclick: toggle("dualOn")}, "On ")) : null), br,
+                                    m(checkBox, {id: "dual_on", checked: t.data.dualOn, onclick: toggle("dualOn")}, "On "),nbsp,
+                                    m(checkBox, {id: "digimeta", checked: t.data.digimeta, onclick: toggle("digimeta")}, "Add meta-info "),
+                            ) : null), br,
                       
                         m("div.field", 
                             m("span.leftlab", {class: "subsect"}, "Internet gate: "),  
@@ -142,7 +148,7 @@ pol.core.digiSetup = class extends pol.core.Widget {
         this.spinner(true);
         this.keys.getSelectedSrv().GET( "api/digi", null, 
             st => {
-                this.lora = !st.txfreq;
+                this.lora = (st.dualOn !== undefined);
                 this.data = st;
                 this.data.server = m.stream(st.server);
                 this.data.port = m.stream(""+st.port);

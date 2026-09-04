@@ -120,7 +120,6 @@ pol.core.Server = class {
             return null;
         if (message != null && message != "")
             msgHash = await pol.security.Sha256_B64(message)
-        console.log("KEY", this.key);
         return await pol.security.hmac_Sha256_B64(this.key, nonce+msgHash);
     }
     
@@ -133,7 +132,6 @@ pol.core.Server = class {
            .then( x=> {
                this.key = x;    
                crypto.subtle.exportKey("raw", x).then( z =>{
-                    console.log("DERIVED KEY", z);
                });
                CONFIG.datastore.setItem("arctic.key."+this.id, x);
             } );

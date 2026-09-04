@@ -202,7 +202,9 @@ pol.core.Widget = class {
         this.pos = pixPos;        
         t.saved = saved;
         t.active = true; 
-        t.errmsg = "";
+        t.errmsg = null;
+        t.successmsg = null;
+        t.waitmsg = null;
         
         if (t.onActivate)
             t.onActivate(); 
@@ -311,14 +313,28 @@ pol.core.Widget = class {
             else if (x.message != null)
                 msg = x.message;
         
+        this.successmsg = this.waitmsg = null;
         this.errmsg = msg;
         console.warn(msg);
         m.redraw();
     }
     
     
+    success(txt) {
+        this.errmsg = this.waitmsg = null; 
+        this.successmsg = txt;
+    }
+    
+    
+    
+    wait(txt) {
+        this.successmsg = this.errmsg = null;
+        this.waitmsg = txt;
+    }
+    
+    
     clearerr()
-        { this.errmsg = null; m.redraw(); }
+        { this.errmsg = null; this.successmsg = null; m.redraw(); }
     
     
     spinner(on) {

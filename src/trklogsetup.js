@@ -1,5 +1,5 @@
 /* 
- Copyright (C) 2022-2024
+ Copyright (C) 2022-2026
  Øyvind Hanssen, LA7ECA, ohanssen@acm.org
  
  This program is free software: you can redistribute it and/or modify
@@ -37,7 +37,10 @@ pol.core.trklogSetup = class extends pol.core.Widget {
             view: function() {
                 return m("div#trklog", [       
                     m("h1", "Misc. configuration (tracklog, etc)"),
-                    (t.errmsg != null ? m("div#errmsg", t.errmsg) : null),
+                    (t.errmsg != null ? m("div#errmsg", t.errmsg) : 
+                        (t.successmsg != null ? m("div#successmsg", t.successmsg) : 
+                            (t.waitmsg != null ? m("div#waitmsg", t.waitmsg) : null))),
+                         
                     m("form.digi", [  
                         m("div.field", 
                             m("span.leftlab", {class: "subsect"}, "Track logging: "),  
@@ -59,7 +62,12 @@ pol.core.trklogSetup = class extends pol.core.Widget {
                             m(textInput, {id: "tlsrv", value: t.data.url, size: 31, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\:\/]+$/i })),
                         m("div.field", 
                             m("span.leftlab", {title: "Enter key or passphrase (for tracklog access)"}, "Server key: "),  
-                            m(textInput, {id: "tlkey", value: t.data.key, size: 31, maxLength:128,  onchange: dirty, regex: /^.*$/i })),
+                            m(textInput, {id: "tlkey", value: t.data.key, size: 31, maxLength:128,  onchange: dirty, regex: /^.*$/i })), br,
+                      
+                        m("div.field", 
+                            m("span.leftlab", {class: "subsect"}, "FW upgrade: "),  
+                            m("button", { type: "button", onclick: fwupgrade}, "Start")),
+                      
                       
                         m("div.butt", 
                             m("img.upd", {src: (t.dirty ? "img/warn.png" : "img/ok.png")}),
@@ -94,6 +102,22 @@ pol.core.trklogSetup = class extends pol.core.Widget {
         }
         
         
+        function fwupgrade() {
+            t.spinner(true);
+            t.wait("Firmware upgrade in progress..");
+            t.keys.getSelectedSrv().PUT( "api/fwupgrade", "{}",
+                ()=> { 
+                    t.success("Firmware upgrade success. Rebooting..");
+                    t.spinner(false);
+                    setTimeout(()=>{t.clearerr()},10000);
+                }, 
+                x=> { 
+                    t.error("Firmware upgrade failed", x);
+                    t.spinner(false);
+                })
+        }
+        
+        
         function toNumber(obj, x) {
             obj[x] = Number(obj[x]());
         }
@@ -108,6 +132,7 @@ pol.core.trklogSetup = class extends pol.core.Widget {
                 ()=> { 
                     t.dirty = false; 
                     t.spinner(false);
+
                 }, 
                 x=> { 
                     t.error("Cannot update tracker", x);
