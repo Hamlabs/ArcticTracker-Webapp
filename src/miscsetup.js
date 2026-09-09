@@ -28,7 +28,7 @@ pol.core.trklogSetup = class extends pol.core.Widget {
     constructor() {
         super();
         const t = this;
-        t.classname = "core.trklogSetup"; 
+        t.classname = "core.miscSetup"; 
         t.data = t.emptyData();
         t.dirty = false;  
         t.keys = pol.widget.get("core.keySetup");
@@ -194,7 +194,7 @@ pol.core.trklogSetup = class extends pol.core.Widget {
 
 
 
-pol.widget.setFactory( "core.trklogSetup", {
+pol.widget.setFactory( "core.miscSetup", {
         create: () => new pol.core.trklogSetup()
     });
 

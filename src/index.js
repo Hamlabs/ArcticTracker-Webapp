@@ -10,7 +10,7 @@ import './statusInfo.js';
 import './wifisetup.js';
 import './aprssetup.js';
 import './digisetup.js';
-import './trklogsetup.js';
+import './miscsetup.js';
 
 // The source files define pol and CONFIG but they're in module scope,
 // not global scope when bundled by Webpack. We need to expose them globally
