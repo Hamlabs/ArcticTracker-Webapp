@@ -59,15 +59,18 @@ pol.core.trklogSetup = class extends pol.core.Widget {
                             m(checkBox, {checked: t.data.trkpost_on, onclick: toggle("trkpost_on") }, "Enable")), 
                         m("div.field", 
                             m("span.leftlab", {title: "URL for posting track-logs"}, "Server URL: "),  
-                            m(textInput, {id: "tlsrv", value: t.data.url, size: 31, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\:\/]+$/i })),
-                        m("div.field", 
-                            m("span.leftlab", {title: "Enter key or passphrase (for tracklog access)"}, "Server key: "),  
-                            m(textInput, {id: "tlkey", value: t.data.key, size: 31, maxLength:128,  onchange: dirty, regex: /^.*$/i })), br,
+                            m(textInput, {id: "tlsrv", value: t.data.url, size: 35, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\:\/]+$/i })), br,
                       
                         m("div.field", 
                             m("span.leftlab", {class: "subsect"}, "FW upgrade: "),  
                             m("button", { type: "button", onclick: fwupgrade}, "Start")),
-                      
+                                             
+                        m("div.field", 
+                            m("span.leftlab", {title: "URL for OTA Firmware upgrade"}, "FW upd URL: "),  
+                            m(textInput, {id: "fwupd", value: t.data.fwurl, size: 35, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\/\:]+$/i })),
+                        m("div.field", 
+                            m("span.leftlab", {title: "URL for OTA Webapp upgrade"}, "Webapp upd: "),  
+                            m(textInput, {id: "fwwupd", value: t.data.fwwurl, size: 35, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\/\:]+$/i })), br,
                       
                         m("div.butt", 
                             m("img.upd", {src: (t.dirty ? "img/warn.png" : "img/ok.png")}),
@@ -128,7 +131,7 @@ pol.core.trklogSetup = class extends pol.core.Widget {
             toNumber(obj, "interv"); toNumber(obj, "ttl"); 
             t.clearerr();
             t.spinner(true);
-            t.keys.getSelectedSrv().PUT( "api/trklog", JSON.stringify(obj),
+            t.keys.getSelectedSrv().PUT( "api/misc", JSON.stringify(obj),
                 ()=> { 
                     t.dirty = false; 
                     t.spinner(false);
@@ -144,8 +147,15 @@ pol.core.trklogSetup = class extends pol.core.Widget {
         
 
     emptyData() {
-        return {trklog_on:false, trkpost_on:false, url: m.stream(""),  key: m.stream(""), 
-                  interv: m.stream(""), ttl: m.stream("")}; 
+        return {
+            trklog_on:false, 
+            trkpost_on:false, 
+            url: m.stream(""), 
+            interv: m.stream(""), 
+            ttl: m.stream(""),
+            fwurl:m.stream(""), 
+            fwwurl:m.stream("") 
+        }; 
     }
     
         
@@ -153,14 +163,15 @@ pol.core.trklogSetup = class extends pol.core.Widget {
         this.clearerr();
         this.data = this.emptyData(); 
         this.spinner(true);
-        this.keys.getSelectedSrv().GET( "api/trklog", null, 
+        this.keys.getSelectedSrv().GET( "api/misc", null, 
             st => {
               //  const st = JSON.parse(x);
                 this.data = st;
                 this.data.url = m.stream(st.url);
-                this.data.key = m.stream(""+st.key);
                 this.data.interv = m.stream(st.interv);
                 this.data.ttl = m.stream(st.ttl);
+                this.data.fwurl = m.stream(st.fwurl);
+                this.data.fwwurl = m.stream(st.fwwurl);
                 this.dirty = false
                 this.spinner(false);
                 m.redraw();

@@ -71,17 +71,17 @@ pol.core.wifiSetup = class extends pol.core.Widget {
                             m("span.leftlab", "AP 6: "),  
                             m(textInput, {value: t.data.ap_5_ssid, size: 12, maxLength:32, onchange: dirty, regex: /^.*$/i }), 
                             m(textInput, {passwd: true, value: t.data.ap_5_pw, size: 12, maxLength:64, onchange: dirty, regex: /^.*$/i })), br,
-                        
-                        m("div.field", 
-                            m("span.leftlab", {title: "URL for OTA Firmware upgrade"}, "FW upd URL: "),  
-                            m(textInput, {id: "fwupd", value: t.data.fwurl, size: 32, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\/\:]+$/i })),
-                        m("div.field", 
-                            m("span.leftlab", {title: "URL for OTA Webapp upgrade"}, "Webapp upd: "),  
-                            m(textInput, {id: "fwwupd", value: t.data.fwwurl, size: 32, maxLength:64,  onchange: dirty, regex: /^[a-zA-Z0-9\-\.\/\:]+$/i })), br,
+ 
+                      
+                      
+                        m("div.field", {className: "key"}, 
+                            m("span.leftlab", {title: "Enter key or passphrase (for tracklog/server access)"}, "Server key: "),  
+                            m(textInput, {id: "tlkey", value: t.data.key, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i })),
                       
                         m("div.field", {className: "key"},
                             m("span.leftlab", {title: "Enter key or passphrase (for encryption of APRS packets)"}, "Crypto Key: "),  
                             m(textInput, {id: "cryptokey", value: t.data.cryptokey, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i })), 
+                        
                         m("div.field", {className: "key"},
                             m("span.leftlab", {title: "Enter key or passphrase (for web/app access)"}, "API Key: "),  
                             m(textInput, {id: "apikey", value: t.data.apikey, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i })), 
@@ -138,8 +138,7 @@ pol.core.wifiSetup = class extends pol.core.Widget {
     emptyData() {
         return {
             apssid: "", appass:m.stream(""),  
-            fwurl:m.stream(""), 
-            fwwurl:m.stream(""),
+            key: m.stream(""), 
             cryptokey:m.stream(""),
             apikey:m.stream(""),
             ap_0_ssid:m.stream(""), ap_0_pw:m.stream(""), 
@@ -161,11 +160,10 @@ pol.core.wifiSetup = class extends pol.core.Widget {
             st => {
               //  const st = JSON.parse(x);
                 this.data = st;
+                this.data.key    = m.stream(""+st.key);
                 this.data.appass = m.stream(st.appass);
                 this.data.htuser = m.stream(st.htuser);
                 this.data.htpass = m.stream(st.htpass);
-                this.data.fwurl = m.stream(st.fwurl);
-                this.data.fwwurl = m.stream(st.fwwurl);
                 this.data.apikey = m.stream("");
                 this.data.cryptokey = m.stream("");
 
