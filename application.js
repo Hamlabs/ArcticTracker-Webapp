@@ -25,6 +25,8 @@ let selectedWidget = null;
 function show(id) {
     return ()=> {
         var x = pol.widget.get(id);
+        if (x==null)
+            return;
         x.activate( $('#widget')[0] );
         selectedWidget = x;
     }

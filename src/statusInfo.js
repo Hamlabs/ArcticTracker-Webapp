@@ -38,6 +38,8 @@ pol.core.statusInfo = class extends pol.core.Widget {
                     (t.errmsg != null ? m("div#errmsg", t.errmsg) : null),
                     m("form.status", [  
                         m("div.field", 
+                            m("span.leftlab", "Serial no: "), (t.data.serialno==null? "N/A" : t.data.serialno)),
+                        m("div.field", 
                             m("span.leftlab", "Device: "), t.data.device),
                         m("div.field", 
                             m("span.leftlab", "Firmware version: "), t.data.version),

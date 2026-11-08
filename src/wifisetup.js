@@ -76,15 +76,21 @@ pol.core.wifiSetup = class extends pol.core.Widget {
                       
                         m("div.field", {className: "key"}, 
                             m("span.leftlab", {title: "Enter key or passphrase (for tracklog/server access)"}, "Server key: "),  
-                            m(textInput, {id: "tlkey", value: t.data.key, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i })),
+                            m(textInput, {id: "tlkey", value: t.data.key, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i }), 
+                            (t.data.serverkey_set? m("img.upd", {src: "img/ok.png"}) : null) 
+                        ),
                       
                         m("div.field", {className: "key"},
                             m("span.leftlab", {title: "Enter key or passphrase (for encryption of APRS packets)"}, "Crypto Key: "),  
-                            m(textInput, {id: "cryptokey", value: t.data.cryptokey, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i })), 
+                            m(textInput, {id: "cryptokey", value: t.data.cryptokey, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i }),
+                            (t.data.cryptokey_set? m("img.upd", {src: "img/ok.png"}) : null)
+                        ), 
                         
                         m("div.field", {className: "key"},
                             m("span.leftlab", {title: "Enter key or passphrase (for web/app access)"}, "API Key: "),  
-                            m(textInput, {id: "apikey", value: t.data.apikey, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i })), 
+                            m(textInput, {id: "apikey", value: t.data.apikey, size: 30, maxLength:128,  onchange: dirty, regex: /^.*$/i }),
+                            (t.data.apikey_set? m("img.upd", {src: "img/ok.png"}) : null)
+                        ), 
                         
                         m("div.butt", 
                             m("img.upd", {src: (t.dirty ? "img/warn.png" : "img/ok.png")}),
@@ -123,6 +129,8 @@ pol.core.wifiSetup = class extends pol.core.Widget {
                 ()=> { 
                     t.dirty = false; 
                     t.data.apikey("");
+                    t.data.key("");
+                    t.data.cryptokey("");
                     t.spinner(false);
                 }, 
                 x=> { 
@@ -160,13 +168,13 @@ pol.core.wifiSetup = class extends pol.core.Widget {
             st => {
               //  const st = JSON.parse(x);
                 this.data = st;
-                this.data.key    = m.stream(""+st.key);
+                this.data.key    = m.stream("");
                 this.data.appass = m.stream(st.appass);
                 this.data.htuser = m.stream(st.htuser);
                 this.data.htpass = m.stream(st.htpass);
                 this.data.apikey = m.stream("");
                 this.data.cryptokey = m.stream("");
-
+                
                 for (var i=0; i<6; i++) {
                     this.data['ap_'+i+'_ssid'] = m.stream(st['ap_'+i+'_ssid']);
                     this.data['ap_'+i+'_pw'] = m.stream(st['ap_'+i+'_pw']);
